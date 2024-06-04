@@ -154,11 +154,11 @@ void WriteBMPfile(ReadBMP readBMP) {
 //    // получаем информацию о битности
 //    int colorsCount = readBMP.infoheader.biBitCount >> 3;
 //    if (colorsCount < 3) {
-        int colorsCount = 3;
+     //   int colorsCount = 3;
 //    }
 
-    int bitsOnColor = readBMP.infoheader.biBitCount / colorsCount;
-    int maskValue = (1 << bitsOnColor) - 1;
+   // int bitsOnColor = readBMP.infoheader.biBitCount / colorsCount;
+    //int maskValue = (1 << bitsOnColor) - 1;
 
     // bmp v1
     if (readBMP.infoheader.biSize >= 40) {
@@ -182,10 +182,10 @@ void WriteBMPfile(ReadBMP readBMP) {
     }
 
     // определение размера отступа в конце каждой строки
-    int linePadding = ((readBMP.infoheader.biWidth * (readBMP.infoheader.biBitCount / 8)) % 4) & 3;
+   // int linePadding = ((readBMP.infoheader.biWidth * (readBMP.infoheader.biBitCount / 8)) % 4) & 3;
 
     // чтение
-    unsigned int bufer;
+    //unsigned int bufer;
 
     for (unsigned int i = 0; i < readBMP.infoheader.biHeight; i++) {
         for (unsigned int j = 0; j < readBMP.infoheader.biWidth; j++) {
@@ -230,14 +230,6 @@ static void write_u16(unsigned short input, FILE* fp)
 }
 
 static void write_u32(unsigned int input, FILE* fp)
-{
-    putc(input, fp);
-    putc(input >> 8, fp);
-    putc(input >> 16, fp);
-    putc(input >> 24, fp);
-}
-
-static void write_s32(int input, FILE* fp)
 {
     putc(input, fp);
     putc(input >> 8, fp);
