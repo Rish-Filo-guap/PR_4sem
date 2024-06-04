@@ -139,10 +139,10 @@ void WriteBMPfile(ReadBMP readBMP) {
     //newName += ctime(start);
 
     //for mac
-    //oFile = fopen( newName.c_str(), "wb");
+    oFile = fopen( newName.c_str(), "wb");
 
     //for win
-    fopen_s( &oFile, newName.c_str(), "wb");
+    //fopen_s( &oFile, newName.c_str(), "wb");
 
     // FILE *oFile = _wfopen(fileName, "w");
     //std::ofstream out;          // поток для записи

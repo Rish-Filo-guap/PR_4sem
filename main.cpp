@@ -16,7 +16,7 @@ int main()
     ss << i<<".bmp";
     string b = ss.str();
     const char* a = b.c_str();
-    cout <<"!" << ss.str()<< endl;
+    cout << ss.str()<< endl;
 	read = ReadBMPfile(b.c_str());
     WriteBMPfile(read);
 
