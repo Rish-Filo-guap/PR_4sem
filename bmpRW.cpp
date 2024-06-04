@@ -123,32 +123,14 @@ ReadBMP ReadBMPfile(const char* fileName)
 }
 void WriteBMPfile(ReadBMP readBMP) {
 
-
-    //char* fileName = argv[1];
-
-    // открываем файл
-    //std::ofstream fileStream(fileName, std::ifstream::binary);
-    //FILE* oFile;
-
     FILE* oFile;
-    //const char* folder = "images\\new\\";
     const char* folder = "images/new/";
     string newName = folder;
-    //auto start = std::chrono::system_clock::now();
     newName += readBMP.name;
-    //newName += ctime(start);
 
-    //for mac
     oFile = fopen( newName.c_str(), "wb");
 
-    //for win
-    //fopen_s( &oFile, newName.c_str(), "wb");
 
-    // FILE *oFile = _wfopen(fileName, "w");
-    //std::ofstream out;          // поток для записи
-    //out.open("hello.bmp");      // открываем файл для записи
-    // заголовк изображения
-    //BITMAPFILEHEADER fileHeader;
     write_u16(readBMP.fileheader.bfType, oFile);
     write_u32(readBMP.fileheader.bfSize, oFile);
     write_u16(readBMP.fileheader.bfReserved1, oFile);
@@ -158,7 +140,7 @@ void WriteBMPfile(ReadBMP readBMP) {
 
 
     // информация изображения
-    //BITMAPINFOHEADER fileInfoHeader;
+
     write_u32(readBMP.infoheader.biSize, oFile);
 
     // bmp core
@@ -169,11 +151,11 @@ void WriteBMPfile(ReadBMP readBMP) {
         write_u16(readBMP.infoheader.biBitCount, oFile);
     }
 
-    // получаем информацию о битности
-    int colorsCount = readBMP.infoheader.biBitCount >> 3;
-    if (colorsCount < 3) {
-        colorsCount = 3;
-    }
+//    // получаем информацию о битности
+//    int colorsCount = readBMP.infoheader.biBitCount >> 3;
+//    if (colorsCount < 3) {
+        int colorsCount = 3;
+//    }
 
     int bitsOnColor = readBMP.infoheader.biBitCount / colorsCount;
     int maskValue = (1 << bitsOnColor) - 1;
@@ -207,17 +189,18 @@ void WriteBMPfile(ReadBMP readBMP) {
 
     for (unsigned int i = 0; i < readBMP.infoheader.biHeight; i++) {
         for (unsigned int j = 0; j < readBMP.infoheader.biWidth; j++) {
-            unsigned char graypixel = readBMP.pixels[i][j].rgbRed * 0.2126 + 0.7152 * readBMP.pixels[i][j].rgbGreen + readBMP.pixels[i][j].rgbBlue * 0.0722;
-            //read(fileStream, bufer, fileInfoHeader.biBitCount / 8);
-            putc(graypixel & 0xFF, oFile);
-            putc(graypixel & 0xFF, oFile);
-            putc(graypixel & 0xFF, oFile);
-            //rgbInfo[i][j].rgbRed = bitextract(bufer, fileInfoHeader.biRedMask);
-            //rgbInfo[i][j].rgbGreen = bitextract(bufer, fileInfoHeader.biGreenMask);
-            //rgbInfo[i][j].rgbBlue = bitextract(bufer, fileInfoHeader.biBlueMask);
-            //rgbInfo[i][j].rgbReserved = bitextract(bufer, fileInfoHeader.biAlphaMask);
+
+//            unsigned char graypixel = readBMP.pixels[i][j].rgbRed * 0.2126
+//                                    + readBMP.pixels[i][j].rgbGreen * 0.7152
+//                                    + readBMP.pixels[i][j].rgbBlue * 0.0722;
+//            putc(graypixel & 0xFF, oFile);
+//            putc(graypixel & 0xFF, oFile);
+//            putc(graypixel & 0xFF, oFile);
+//
+            putc(readBMP.pixels[i][j].rgbBlue & 0xFF, oFile);
+            putc(readBMP.pixels[i][j].rgbGreen & 0xFF, oFile);
+            putc(readBMP.pixels[i][j].rgbRed & 0xFF, oFile);
         }
-        //fileStream.seekg(linePadding, std::ios_base::cur);
     }
     fclose(oFile);
 
