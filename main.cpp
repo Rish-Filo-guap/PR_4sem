@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
-#include <string.h>
+#include <string>
 #include <sstream>
 #include "bmpRW.h"
 using namespace std;

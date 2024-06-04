@@ -137,6 +137,11 @@ void WriteBMPfile(ReadBMP readBMP) {
     //auto start = std::chrono::system_clock::now();
     newName += readBMP.name;
     //newName += ctime(start);
+
+    //for mac
+    //oFile = fopen( newName.c_str(), "wb");
+
+    //for win
     fopen_s( &oFile, newName.c_str(), "wb");
 
     // FILE *oFile = _wfopen(fileName, "w");
