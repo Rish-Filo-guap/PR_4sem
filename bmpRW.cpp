@@ -221,11 +221,3 @@ static void write_u32(unsigned int input, FILE* fp)
     putc(input >> 16, fp);
     putc(input >> 24, fp);
 }
-
-static void write_s32(int input, FILE* fp)
-{
-    putc(input, fp);
-    putc(input >> 8, fp);
-    putc(input >> 16, fp);
-    putc(input >> 24, fp);
-}

@@ -82,11 +82,7 @@ void read(std::ifstream& fp, Type& result, std::size_t size) {
 // bit extract
 unsigned char bitextract(const unsigned int byte, const unsigned int mask);
 
-static unsigned short read_u16(FILE* fp);
-static unsigned int   read_u32(FILE* fp);
-static int            read_s32(FILE* fp);
-
 static void write_u16(unsigned short input, FILE* fp);
 static void write_u32(unsigned int input, FILE* fp);
-static void write_s32(int input, FILE* fp);
+
 
