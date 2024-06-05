@@ -11,6 +11,8 @@ using namespace std;
 ReadBMP ReadBMPfile(const char* fileName)
 {
 
+
+    // открываем файл
     const char* folder = "images/old/";
     string newName = folder;
     newName += fileName;
@@ -39,8 +41,13 @@ ReadBMP ReadBMPfile(const char* fileName)
         read(fileStream, fileInfoHeader.biBitCount, sizeof(fileInfoHeader.biBitCount));
     }
 
+    // получаем информацию о битности
+    int colorsCount = fileInfoHeader.biBitCount >> 3;
+    if (colorsCount < 3) {
+        colorsCount = 3;
+    }
 
-    int bitsOnColor = fileInfoHeader.biBitCount / 3;
+    int bitsOnColor = fileInfoHeader.biBitCount / colorsCount;
     int maskValue = (1 << bitsOnColor) - 1;
 
     // bmp v1
@@ -58,6 +65,11 @@ ReadBMP ReadBMPfile(const char* fileName)
     fileInfoHeader.biGreenMask = 0;
     fileInfoHeader.biBlueMask = 0;
 
+    if (fileInfoHeader.biSize >= 52) {
+        read(fileStream, fileInfoHeader.biRedMask, sizeof(fileInfoHeader.biRedMask));
+        read(fileStream, fileInfoHeader.biGreenMask, sizeof(fileInfoHeader.biGreenMask));
+        read(fileStream, fileInfoHeader.biBlueMask, sizeof(fileInfoHeader.biBlueMask));
+    }
 
     // если маска не задана, то ставим маску по умолчанию
     if (fileInfoHeader.biRedMask == 0 || fileInfoHeader.biGreenMask == 0 || fileInfoHeader.biBlueMask == 0) {
@@ -104,14 +116,18 @@ ReadBMP ReadBMPfile(const char* fileName)
 }
 void WriteBMPfile(ReadBMP readBMP) {
 
+
     FILE* oFile;
+
     const char* folder = "images/new/";
     string newName = folder;
+
     newName += readBMP.name;
 
     oFile = fopen( newName.c_str(), "wb");
 
 
+    // заголовк изображения
     write_u16(readBMP.fileheader.bfType, oFile);
     write_u32(readBMP.fileheader.bfSize, oFile);
     write_u16(readBMP.fileheader.bfReserved1, oFile);
@@ -121,7 +137,7 @@ void WriteBMPfile(ReadBMP readBMP) {
 
 
     // информация изображения
-
+    //BITMAPINFOHEADER fileInfoHeader;
     write_u32(readBMP.infoheader.biSize, oFile);
 
     // bmp core
@@ -132,14 +148,7 @@ void WriteBMPfile(ReadBMP readBMP) {
         write_u16(readBMP.infoheader.biBitCount, oFile);
     }
 
-//    // получаем информацию о битности
-//    int colorsCount = readBMP.infoheader.biBitCount >> 3;
-//    if (colorsCount < 3) {
-     //   int colorsCount = 3;
-//    }
 
-   // int bitsOnColor = readBMP.infoheader.biBitCount / colorsCount;
-    //int maskValue = (1 << bitsOnColor) - 1;
 
     // bmp v1
     if (readBMP.infoheader.biSize >= 40) {
@@ -162,26 +171,21 @@ void WriteBMPfile(ReadBMP readBMP) {
         rgbInfo[i] = new RGBQUAD[readBMP.infoheader.biWidth];
     }
 
-    // определение размера отступа в конце каждой строки
-   // int linePadding = ((readBMP.infoheader.biWidth * (readBMP.infoheader.biBitCount / 8)) % 4) & 3;
 
-    // чтение
-    //unsigned int bufer;
+
 
     for (unsigned int i = 0; i < readBMP.infoheader.biHeight; i++) {
         for (unsigned int j = 0; j < readBMP.infoheader.biWidth; j++) {
-
-//            unsigned char graypixel = readBMP.pixels[i][j].rgbRed * 0.2126
-//                                    + readBMP.pixels[i][j].rgbGreen * 0.7152
-//                                    + readBMP.pixels[i][j].rgbBlue * 0.0722;
-//            putc(graypixel & 0xFF, oFile);
-//            putc(graypixel & 0xFF, oFile);
-//            putc(graypixel & 0xFF, oFile);
-//
-            putc(readBMP.pixels[i][j].rgbBlue & 0xFF, oFile);
-            putc(readBMP.pixels[i][j].rgbGreen & 0xFF, oFile);
-            putc(readBMP.pixels[i][j].rgbRed & 0xFF, oFile);
+            unsigned char graypixel = readBMP.pixels[i][j].rgbRed * 0.2126 + 0.7152 * readBMP.pixels[i][j].rgbGreen + readBMP.pixels[i][j].rgbBlue * 0.0722;
+            putc(graypixel & 0xFF, oFile);
+            putc(graypixel & 0xFF, oFile);
+            putc(graypixel & 0xFF, oFile);
+            //rgbInfo[i][j].rgbRed = bitextract(bufer, fileInfoHeader.biRedMask);
+            //rgbInfo[i][j].rgbGreen = bitextract(bufer, fileInfoHeader.biGreenMask);
+            //rgbInfo[i][j].rgbBlue = bitextract(bufer, fileInfoHeader.biBlueMask);
+            //rgbInfo[i][j].rgbReserved = bitextract(bufer, fileInfoHeader.biAlphaMask);
         }
+
     }
     fclose(oFile);
 
@@ -211,6 +215,14 @@ static void write_u16(unsigned short input, FILE* fp)
 }
 
 static void write_u32(unsigned int input, FILE* fp)
+{
+    putc(input, fp);
+    putc(input >> 8, fp);
+    putc(input >> 16, fp);
+    putc(input >> 24, fp);
+}
+
+static void write_s32(int input, FILE* fp)
 {
     putc(input, fp);
     putc(input >> 8, fp);

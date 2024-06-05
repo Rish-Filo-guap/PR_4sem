@@ -1,6 +1,13 @@
 # ninja log v6
-2	481	7392413745469879	CMakeFiles/PR_4sem.dir/main.cpp.obj	63c1a3ffa18bdae4
-5	428	7392416537537310	CMakeFiles/PR_4sem.dir/bmpRW.cpp.obj	e1eefaac1c3a04dc
-428	522	7392416541776161	PR_4sem.exe	c3fcc896c1f5fa55
-15	429	7392417470835836	CMakeFiles/PR_4sem.dir/bmpRW.cpp.obj	e1eefaac1c3a04dc
-430	525	7392417474980090	PR_4sem.exe	c3fcc896c1f5fa55
+6	579	7392434255435756	CMakeFiles/PR_4sem.dir/main.cpp.obj	63c1a3ffa18bdae4
+7	437	7392434507175446	CMakeFiles/PR_4sem.dir/bmpRW.cpp.obj	e1eefaac1c3a04dc
+437	515	7392434511476481	PR_4sem.exe	c3fcc896c1f5fa55
+6	421	7392997603930864	CMakeFiles/PR_4sem.dir/main.cpp.obj	63c1a3ffa18bdae4
+10	441	7392997603960786	CMakeFiles/PR_4sem.dir/bmpRW.cpp.obj	e1eefaac1c3a04dc
+441	520	7392997608278997	PR_4sem.exe	c3fcc896c1f5fa55
+7	449	7392998617796413	CMakeFiles/PR_4sem.dir/bmpRW.cpp.obj	e1eefaac1c3a04dc
+450	534	7392998622224715	PR_4sem.exe	c3fcc896c1f5fa55
+7	442	7392998965115557	CMakeFiles/PR_4sem.dir/bmpRW.cpp.obj	e1eefaac1c3a04dc
+442	536	7392998969465415	PR_4sem.exe	c3fcc896c1f5fa55
+6	459	7393001354248748	CMakeFiles/PR_4sem.dir/bmpRW.cpp.obj	e1eefaac1c3a04dc
+460	542	7393001358774654	PR_4sem.exe	c3fcc896c1f5fa55
