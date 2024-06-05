@@ -4,9 +4,6 @@
 #include <iostream>
 #include <fstream>
 #include <cstdio>
-#include <cstdlib>
-#include <cstdint>
-
 
 #include "bmpRW.h"
 using namespace std;
@@ -14,12 +11,6 @@ using namespace std;
 ReadBMP ReadBMPfile(const char* fileName)
 {
 
-
-    //char* fileName = argv[1];
-
-    // открываем файл
-    //1.bmp
-    //const char* folder = "images\\old\\";
     const char* folder = "images/old/";
     string newName = folder;
     newName += fileName;
@@ -48,13 +39,8 @@ ReadBMP ReadBMPfile(const char* fileName)
         read(fileStream, fileInfoHeader.biBitCount, sizeof(fileInfoHeader.biBitCount));
     }
 
-    // получаем информацию о битности
-    int colorsCount = fileInfoHeader.biBitCount >> 3;
-    if (colorsCount < 3) {
-        colorsCount = 3;
-    }
 
-    int bitsOnColor = fileInfoHeader.biBitCount / colorsCount;
+    int bitsOnColor = fileInfoHeader.biBitCount / 3;
     int maskValue = (1 << bitsOnColor) - 1;
 
     // bmp v1
@@ -72,11 +58,6 @@ ReadBMP ReadBMPfile(const char* fileName)
     fileInfoHeader.biGreenMask = 0;
     fileInfoHeader.biBlueMask = 0;
 
-    if (fileInfoHeader.biSize >= 52) {
-        read(fileStream, fileInfoHeader.biRedMask, sizeof(fileInfoHeader.biRedMask));
-        read(fileStream, fileInfoHeader.biGreenMask, sizeof(fileInfoHeader.biGreenMask));
-        read(fileStream, fileInfoHeader.biBlueMask, sizeof(fileInfoHeader.biBlueMask));
-    }
 
     // если маска не задана, то ставим маску по умолчанию
     if (fileInfoHeader.biRedMask == 0 || fileInfoHeader.biGreenMask == 0 || fileInfoHeader.biBlueMask == 0) {
