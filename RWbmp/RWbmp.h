@@ -65,7 +65,7 @@ struct BITMAPFILEHEADER{
     unsigned char  rgbBlue;
     unsigned char  rgbGreen;
     unsigned char  rgbRed;
-    unsigned char  rgbReserved;
+    unsigned char  grayPixel;
 } ;
 
 struct ReadBMP{
@@ -86,5 +86,5 @@ static void write_u16(unsigned short input, FILE* fp);
 static void write_u32(unsigned int input, FILE* fp);
 
 ReadBMP ReadBMPfile(std::string fileName);
-void WriteBMPfile(ReadBMP readBMP, std::string filename);
+void WriteBMPfile(ReadBMP readBMP, std::string filename, int mode);
 

@@ -6,5 +6,5 @@
 #define PR_4SEM_RWBIN_H
 
 #endif //PR_4SEM_RWBIN_H
-void WriteBinFile(ReadBMP readBMP, std::string filename);
+void WriteBinFile(ReadBMP readBMP, std::string filename ,int mode);
 ReadBMP ReadBinFile(std::string filename);

@@ -27,7 +27,7 @@ int main()
 
 	read = ReadBMPfile(filename);
     //cout<<"\t bmp read";
-    WriteBinFile(read, name);
+    WriteBinFile(read, name, 1);
     //cout<<"\t bin write";
 
 
@@ -36,10 +36,10 @@ int main()
 
 
 
-    thread th(WriteBMPfile,read, filename);
+    thread th(WriteBMPfile,read, filename, 0);
     //WriteBMPfile(read, filename);
 
-    WriteBMPfile(binread,"new_" +filename);
+    WriteBMPfile(binread,"new_" +filename, 1);
     //cout<<"\t bmps write"<<endl;
 
 

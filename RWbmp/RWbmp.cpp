@@ -37,12 +37,12 @@ ReadBMP ReadBMPfile(string fileName)
     read(fileStream, fileInfoHeader.biSize, sizeof(fileInfoHeader.biSize));
 
     // bmp core
-    if (fileInfoHeader.biSize >= 12) {
+    //if (fileInfoHeader.biSize >= 12) {
         read(fileStream, fileInfoHeader.biWidth, sizeof(fileInfoHeader.biWidth));
         read(fileStream, fileInfoHeader.biHeight, sizeof(fileInfoHeader.biHeight));
         read(fileStream, fileInfoHeader.biPlanes, sizeof(fileInfoHeader.biPlanes));
         read(fileStream, fileInfoHeader.biBitCount, sizeof(fileInfoHeader.biBitCount));
-    }
+    //}
 
     // получаем информацию о битности
     int colorsCount = fileInfoHeader.biBitCount >> 3;
@@ -54,25 +54,15 @@ ReadBMP ReadBMPfile(string fileName)
     int maskValue = (1 << bitsOnColor) - 1;
 
     // bmp v1
-    if (fileInfoHeader.biSize >= 40) {
+    //if (fileInfoHeader.biSize >= 40) {
         read(fileStream, fileInfoHeader.biCompression, sizeof(fileInfoHeader.biCompression));
         read(fileStream, fileInfoHeader.biSizeImage, sizeof(fileInfoHeader.biSizeImage));
         read(fileStream, fileInfoHeader.biXPelsPerMeter, sizeof(fileInfoHeader.biXPelsPerMeter));
         read(fileStream, fileInfoHeader.biYPelsPerMeter, sizeof(fileInfoHeader.biYPelsPerMeter));
         read(fileStream, fileInfoHeader.biClrUsed, sizeof(fileInfoHeader.biClrUsed));
         read(fileStream, fileInfoHeader.biClrImportant, sizeof(fileInfoHeader.biClrImportant));
-    }
+   // }
 
-    //// bmp v2
-//    fileInfoHeader.biRedMask = 0;
-//    fileInfoHeader.biGreenMask = 0;
-//    fileInfoHeader.biBlueMask = 0;
-
-//    if (fileInfoHeader.biSize >= 52) {
-//        read(fileStream, fileInfoHeader.biRedMask, sizeof(fileInfoHeader.biRedMask));
-//        read(fileStream, fileInfoHeader.biGreenMask, sizeof(fileInfoHeader.biGreenMask));
-//        read(fileStream, fileInfoHeader.biBlueMask, sizeof(fileInfoHeader.biBlueMask));
-//    }
 
     // если маска не задана, то ставим маску по умолчанию
     if (fileInfoHeader.biRedMask == 0 || fileInfoHeader.biGreenMask == 0 || fileInfoHeader.biBlueMask == 0) {
@@ -103,10 +93,19 @@ ReadBMP ReadBMPfile(string fileName)
             rgbInfo[i][j].rgbRed = bitextract(bufer, fileInfoHeader.biRedMask);
             rgbInfo[i][j].rgbGreen = bitextract(bufer, fileInfoHeader.biGreenMask);
             rgbInfo[i][j].rgbBlue = bitextract(bufer, fileInfoHeader.biBlueMask);
-            rgbInfo[i][j].rgbReserved = bitextract(bufer, fileInfoHeader.biAlphaMask);
+
+
+            rgbInfo[i][j].grayPixel = rgbInfo[i][j].rgbRed * 0.2126 +
+                                      rgbInfo[i][j].rgbGreen* 0.7152 +
+                                      rgbInfo[i][j].rgbBlue * 0.0722;
+
+
+
+
         }
         fileStream.seekg(linePadding, std::ios_base::cur);
     }
+
 
     // вывод
     ReadBMP read;
@@ -117,7 +116,7 @@ ReadBMP ReadBMPfile(string fileName)
 
     return read;
 }
-void WriteBMPfile(ReadBMP readBMP, string filename) {
+void WriteBMPfile(ReadBMP readBMP, string filename, int mode) {
 
 
     FILE* oFile;
@@ -144,24 +143,24 @@ void WriteBMPfile(ReadBMP readBMP, string filename) {
     write_u32(readBMP.infoheader.biSize, oFile);
 
     // bmp core
-    if (readBMP.infoheader.biSize >= 12) {
+   // if (readBMP.infoheader.biSize >= 12) {
         write_u32(readBMP.infoheader.biWidth, oFile);
         write_u32(readBMP.infoheader.biHeight, oFile);
         write_u16(readBMP.infoheader.biPlanes, oFile);
         write_u16(readBMP.infoheader.biBitCount, oFile);
-    }
+    //}
 
 
 
     // bmp v1
-    if (readBMP.infoheader.biSize >= 40) {
+    //if (readBMP.infoheader.biSize >= 40) {
         write_u32(readBMP.infoheader.biCompression, oFile);
         write_u32(readBMP.infoheader.biSizeImage, oFile);
         write_u32(readBMP.infoheader.biXPelsPerMeter, oFile);
         write_u32(readBMP.infoheader.biYPelsPerMeter, oFile);
         write_u32(readBMP.infoheader.biClrUsed, oFile);
         write_u32(readBMP.infoheader.biClrImportant, oFile);
-    }
+    //}
 
 
 
@@ -173,10 +172,22 @@ void WriteBMPfile(ReadBMP readBMP, string filename) {
             /*putc(graypixel & 0xFF, oFile);
             putc(graypixel & 0xFF, oFile);
             putc(graypixel & 0xFF, oFile);*/
+            switch (mode) {
+                case 0:{
+                    putc(readBMP.pixels[i][j].rgbBlue & 0xFF, oFile);
+                    putc(readBMP.pixels[i][j].rgbGreen & 0xFF, oFile);
+                    putc(readBMP.pixels[i][j].rgbRed & 0xFF, oFile);
+                    break;
+                }
+                case 1:{
+                    putc(readBMP.pixels[i][j].grayPixel & 0xFF, oFile);
+                    putc(readBMP.pixels[i][j].grayPixel & 0xFF, oFile);
+                    putc(readBMP.pixels[i][j].grayPixel & 0xFF, oFile);
+                    break;
+                }
 
-            putc(readBMP.pixels[i][j].rgbBlue & 0xFF, oFile);
-            putc(readBMP.pixels[i][j].rgbGreen & 0xFF, oFile);
-            putc(readBMP.pixels[i][j].rgbRed & 0xFF, oFile);
+            }
+
 
         }
 

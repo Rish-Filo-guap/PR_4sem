@@ -10,26 +10,25 @@
 #include "../RWbmp/RWbmp.h"
 using  namespace std;
 
-void WriteBinFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biHeight, string filename);
-void WriteFileHeader(BITMAPINFOHEADER infoheader, BITMAPFILEHEADER fileheader, string filename);
+void WriteBinFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biHeight, string filename, int mode);
+void WriteFileHeader(BITMAPINFOHEADER infoheader, BITMAPFILEHEADER fileheader, string filename, int mode);
 
 
-void WriteBinFile(ReadBMP readBMP, string filename){
+void WriteBinFile(ReadBMP readBMP, string filename, int mode){
 
 
     string newName = "images/bin/";
 
     newName+=filename;
     string headerName = newName+"_header.txt";
-    //headerName+="_header.txt";
     string pixelsName = newName + "_pixels.bin";
 
-    WriteBinFilePixels(readBMP.pixels, readBMP.infoheader.biWidth, readBMP.infoheader.biHeight, pixelsName);
-    WriteFileHeader(readBMP.infoheader, readBMP.fileheader, headerName);
+    WriteBinFilePixels(readBMP.pixels, readBMP.infoheader.biWidth, readBMP.infoheader.biHeight, pixelsName, mode);
+    WriteFileHeader(readBMP.infoheader, readBMP.fileheader, headerName, mode);
 
 
 }
-void WriteBinFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biHeight, string filename){
+void WriteBinFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biHeight, string filename, int mode){
 
     FILE *oFile;
     oFile = fopen( filename.c_str(), "wb");
@@ -37,9 +36,18 @@ void WriteBinFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biH
     for (unsigned int i = 0; i < biHeight; i++) {
         for (unsigned int j = 0; j < biWidth; j++) {
             //unsigned char graypixel = readBMP.pixels[i][j].rgbRed * 0.2126 + 0.7152 * readBMP.pixels[i][j].rgbGreen + readBMP.pixels[i][j].rgbBlue * 0.0722;
-            putc(pixels[i][j].rgbBlue & 0xFF, oFile);
-            putc(pixels[i][j].rgbGreen & 0xFF, oFile);
-            putc(pixels[i][j].rgbRed & 0xFF, oFile);
+            switch(mode){
+                case 0:{
+                    putc(pixels[i][j].rgbBlue & 0xFF, oFile);
+                    putc(pixels[i][j].rgbGreen & 0xFF, oFile);
+                    putc(pixels[i][j].rgbRed & 0xFF, oFile);
+                    break;
+                }
+                case 1:{
+                    putc(pixels[i][j].grayPixel & 0xFF, oFile);
+                    break;
+                }
+            }
 
 
         }
@@ -55,7 +63,7 @@ void write_short(unsigned short a, ofstream* out){
     *out<<a<<endl;
 }
 
-void WriteFileHeader(BITMAPINFOHEADER infoheader, BITMAPFILEHEADER fileheader, string filename){
+void WriteFileHeader(BITMAPINFOHEADER infoheader, BITMAPFILEHEADER fileheader, string filename, int mode){
 
     ofstream oFile;
     oFile.open(filename);
@@ -74,25 +82,26 @@ void WriteFileHeader(BITMAPINFOHEADER infoheader, BITMAPFILEHEADER fileheader, s
     write_int(infoheader.biSize, &oFile);
 
     // bmp core
-    if (infoheader.biSize >= 12) {
+    //if (infoheader.biSize >= 12) {
         write_int(infoheader.biWidth, &oFile);
         write_int(infoheader.biHeight, &oFile);
         write_short(infoheader.biPlanes, &oFile);
         write_short(infoheader.biBitCount, &oFile);
-    }
+   // }
 
     // bmp v1
-    if (infoheader.biSize >= 40) {
+    //if (infoheader.biSize >= 40) {
         write_int(infoheader.biCompression, &oFile);
         write_int(infoheader.biSizeImage, &oFile);
         write_int(infoheader.biXPelsPerMeter, &oFile);
         write_int(infoheader.biYPelsPerMeter, &oFile);
         write_int(infoheader.biClrUsed, &oFile);
         write_int(infoheader.biClrImportant, &oFile);
-    }
+    //}
+    write_short(mode, &oFile);
     oFile.close();
 }
-void ReadFileHeader(ReadBMP &readB,string headerName){
+void ReadFileHeader(ReadBMP &readB,string headerName, int &mode){
     ifstream in(headerName);
     string line;
     if(in.is_open()){
@@ -148,12 +157,14 @@ void ReadFileHeader(ReadBMP &readB,string headerName){
         getline(in, line);
         readB.infoheader.biClrImportant = stoi(line);
 
+        getline(in, line);
+        mode = stoi(line);
 
 
     }
     in.close();
 }
-void ReadBinFilePixels(ReadBMP &readB,string pixelsName){
+void ReadBinFilePixels(ReadBMP &readB,string pixelsName, int mode){
 
     ifstream fileStream(pixelsName, ifstream::binary);
 
@@ -167,14 +178,27 @@ void ReadBinFilePixels(ReadBMP &readB,string pixelsName){
     for (unsigned int i = 0; i < readB.infoheader.biHeight; i++) {
         for (unsigned int j = 0; j < readB.infoheader.biWidth; j++) {
 
-            read(fileStream, bufer, 1);
-            rgbInfo[i][j].rgbBlue = bufer;
+            switch (mode) {
 
-            read(fileStream, bufer, 1);
-            rgbInfo[i][j].rgbGreen = bufer;
+                case 0:{
+                    read(fileStream, bufer, 1);
+                    rgbInfo[i][j].rgbBlue = bufer;
 
-            read(fileStream, bufer, 1);
-            rgbInfo[i][j].rgbRed = bufer;
+                    read(fileStream, bufer, 1);
+                    rgbInfo[i][j].rgbGreen = bufer;
+
+                    read(fileStream, bufer, 1);
+                    rgbInfo[i][j].rgbRed = bufer;
+
+                    break;
+                }
+                case 1:{
+                    read(fileStream, bufer, 1);
+                    rgbInfo[i][j].grayPixel = bufer;
+                    break;
+                }
+            }
+
 
 
         }
@@ -194,10 +218,10 @@ ReadBMP ReadBinFile(string filename){
     string pixelsName = newName + "_pixels.bin";
 
     ReadBMP readB;
+    int mode;
 
-
-    ReadFileHeader(readB, headerName);
-    ReadBinFilePixels(readB, pixelsName);
+    ReadFileHeader(readB, headerName, mode);
+    ReadBinFilePixels(readB, pixelsName, mode);
     return readB;
 
 }
