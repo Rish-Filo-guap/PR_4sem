@@ -64,15 +64,15 @@ ReadBMP ReadBMPfile(string fileName)
     }
 
     //// bmp v2
-    fileInfoHeader.biRedMask = 0;
-    fileInfoHeader.biGreenMask = 0;
-    fileInfoHeader.biBlueMask = 0;
+//    fileInfoHeader.biRedMask = 0;
+//    fileInfoHeader.biGreenMask = 0;
+//    fileInfoHeader.biBlueMask = 0;
 
-    if (fileInfoHeader.biSize >= 52) {
-        read(fileStream, fileInfoHeader.biRedMask, sizeof(fileInfoHeader.biRedMask));
-        read(fileStream, fileInfoHeader.biGreenMask, sizeof(fileInfoHeader.biGreenMask));
-        read(fileStream, fileInfoHeader.biBlueMask, sizeof(fileInfoHeader.biBlueMask));
-    }
+//    if (fileInfoHeader.biSize >= 52) {
+//        read(fileStream, fileInfoHeader.biRedMask, sizeof(fileInfoHeader.biRedMask));
+//        read(fileStream, fileInfoHeader.biGreenMask, sizeof(fileInfoHeader.biGreenMask));
+//        read(fileStream, fileInfoHeader.biBlueMask, sizeof(fileInfoHeader.biBlueMask));
+//    }
 
     // если маска не задана, то ставим маску по умолчанию
     if (fileInfoHeader.biRedMask == 0 || fileInfoHeader.biGreenMask == 0 || fileInfoHeader.biBlueMask == 0) {
@@ -162,17 +162,6 @@ void WriteBMPfile(ReadBMP readBMP, string filename) {
         write_u32(readBMP.infoheader.biClrUsed, oFile);
         write_u32(readBMP.infoheader.biClrImportant, oFile);
     }
-
-
-
-
-
-    // rgb info
-//    RGBQUAD** rgbInfo = new RGBQUAD * [readBMP.infoheader.biHeight];
-//
-//    for (unsigned int i = 0; i < readBMP.infoheader.biHeight; i++) {
-//        rgbInfo[i] = new RGBQUAD[readBMP.infoheader.biWidth];
-//    }
 
 
 

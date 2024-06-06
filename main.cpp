@@ -14,7 +14,7 @@ int main()
     ReadBMP binread;
     ReadBMP read;
     auto start = chrono::system_clock::now();
-    for (int i = 1; i < 2; i++) {
+    for (int i = 1; i < 15; i++) {
 
     stringstream ss;
     ss << i;
@@ -26,20 +26,25 @@ int main()
 
 
 	read = ReadBMPfile(filename);
-    //thread th(WriteBinFile, read);
-
-
+    //cout<<"\t bmp read";
     WriteBinFile(read, name);
+    //cout<<"\t bin write";
 
 
     binread = ReadBinFile(name);
+    //cout<<"\t bin read";
 
-    WriteBMPfile(read, filename);
+
+
+    thread th(WriteBMPfile,read, filename);
+    //WriteBMPfile(read, filename);
 
     WriteBMPfile(binread,"new_" +filename);
+    //cout<<"\t bmps write"<<endl;
 
 
-    //th.join();
+    th.join();
+
     }
     auto end = chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = end-start;

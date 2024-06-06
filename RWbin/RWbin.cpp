@@ -20,26 +20,26 @@ void WriteBinFile(ReadBMP readBMP, string filename){
     string newName = "images/bin/";
 
     newName+=filename;
-    string headerName = newName;
-    headerName+="_header.txt";
+    string headerName = newName+"_header.txt";
+    //headerName+="_header.txt";
     string pixelsName = newName + "_pixels.bin";
 
     WriteBinFilePixels(readBMP.pixels, readBMP.infoheader.biWidth, readBMP.infoheader.biHeight, pixelsName);
-
     WriteFileHeader(readBMP.infoheader, readBMP.fileheader, headerName);
+
 
 }
 void WriteBinFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biHeight, string filename){
 
     FILE *oFile;
-    oFile = fopen( filename.c_str(), "w");
+    oFile = fopen( filename.c_str(), "wb");
 
     for (unsigned int i = 0; i < biHeight; i++) {
         for (unsigned int j = 0; j < biWidth; j++) {
             //unsigned char graypixel = readBMP.pixels[i][j].rgbRed * 0.2126 + 0.7152 * readBMP.pixels[i][j].rgbGreen + readBMP.pixels[i][j].rgbBlue * 0.0722;
-            putc(pixels[i][j].rgbBlue, oFile);
-            putc(pixels[i][j].rgbGreen, oFile);
-            putc(pixels[i][j].rgbRed, oFile);
+            putc(pixels[i][j].rgbBlue & 0xFF, oFile);
+            putc(pixels[i][j].rgbGreen & 0xFF, oFile);
+            putc(pixels[i][j].rgbRed & 0xFF, oFile);
 
 
         }
@@ -163,33 +163,24 @@ void ReadBinFilePixels(ReadBMP &readB,string pixelsName){
         rgbInfo[i] = new RGBQUAD[readB.infoheader.biWidth];
     }
 
-    unsigned char bufer;
-
+    unsigned int bufer;
     for (unsigned int i = 0; i < readB.infoheader.biHeight; i++) {
         for (unsigned int j = 0; j < readB.infoheader.biWidth; j++) {
-            int size=256;
-            //read(fileStream, bufer, size);
-            read(fileStream, bufer,  sizeof(unsigned char));
-            rgbInfo[i][j].rgbBlue=bufer;
-            //fileStream.read((char *)&bufer, sizeof (bufer));
-           // cout<<bufer<<" ";
-            read(fileStream, bufer,  sizeof(unsigned char));
-            rgbInfo[i][j].rgbGreen=bufer;
-            //cout<<bufer<<" ";
 
-            read(fileStream, bufer, sizeof(unsigned char));
-            rgbInfo[i][j].rgbRed=bufer;
-            //cout<<bufer<<" ";
-            //read(fileStream, bufer, size);
-            //readB.pixels[i][j].rgbGreen=10;
+            read(fileStream, bufer, 1);
+            rgbInfo[i][j].rgbBlue = bufer;
 
-            //read(fileStream, bufer, size);
-            //readB.pixels[i][j].rgbRed=10;
+            read(fileStream, bufer, 1);
+            rgbInfo[i][j].rgbGreen = bufer;
+
+            read(fileStream, bufer, 1);
+            rgbInfo[i][j].rgbRed = bufer;
+
 
         }
-
     }
-            cout<<pixelsName[11]<<endl;
+
+
     readB.pixels = rgbInfo;
     fileStream.close();
 }
@@ -203,11 +194,8 @@ ReadBMP ReadBinFile(string filename){
     string pixelsName = newName + "_pixels.bin";
 
     ReadBMP readB;
-    string Name =filename;
-    Name= "new_" + Name;
 
 
-    //cout<<" "<<filename<<endl;
     ReadFileHeader(readB, headerName);
     ReadBinFilePixels(readB, pixelsName);
     return readB;
