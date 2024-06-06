@@ -3,7 +3,6 @@
 //
 #include <fstream>
 #include <iostream>
-#include <fstream>
 #include <thread>
 #include <string>
 
@@ -35,7 +34,7 @@ void WriteBinFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biH
 
     for (unsigned int i = 0; i < biHeight; i++) {
         for (unsigned int j = 0; j < biWidth; j++) {
-            //unsigned char graypixel = readBMP.pixels[i][j].rgbRed * 0.2126 + 0.7152 * readBMP.pixels[i][j].rgbGreen + readBMP.pixels[i][j].rgbBlue * 0.0722;
+
             switch(mode){
                 case 0:{
                     putc(pixels[i][j].rgbBlue & 0xFF, oFile);
@@ -78,26 +77,26 @@ void WriteFileHeader(BITMAPINFOHEADER infoheader, BITMAPFILEHEADER fileheader, s
     write_int(fileheader.bfOffBits, &oFile);
 
     // информация изображения
-    //BITMAPINFOHEADER fileInfoHeader;
+
     write_int(infoheader.biSize, &oFile);
 
     // bmp core
-    //if (infoheader.biSize >= 12) {
+
         write_int(infoheader.biWidth, &oFile);
         write_int(infoheader.biHeight, &oFile);
         write_short(infoheader.biPlanes, &oFile);
         write_short(infoheader.biBitCount, &oFile);
-   // }
+
 
     // bmp v1
-    //if (infoheader.biSize >= 40) {
+
         write_int(infoheader.biCompression, &oFile);
         write_int(infoheader.biSizeImage, &oFile);
         write_int(infoheader.biXPelsPerMeter, &oFile);
         write_int(infoheader.biYPelsPerMeter, &oFile);
         write_int(infoheader.biClrUsed, &oFile);
         write_int(infoheader.biClrImportant, &oFile);
-    //}
+
     write_short(mode, &oFile);
     oFile.close();
 }

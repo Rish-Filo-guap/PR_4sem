@@ -11,17 +11,9 @@
 // CIEXYZTRIPLE stuff
 typedef int FXPT2DOT30;
 
- struct CIEXYZ{
-    FXPT2DOT30 ciexyzX;
-    FXPT2DOT30 ciexyzY;
-    FXPT2DOT30 ciexyzZ;
-} ;
 
- struct CIEXYZTRIPLE{
-    CIEXYZ  ciexyzRed;
-    CIEXYZ  ciexyzGreen;
-    CIEXYZ  ciexyzBlue;
-} ;
+
+
 
 // bitmap file header
 struct BITMAPFILEHEADER{
@@ -48,16 +40,7 @@ struct BITMAPFILEHEADER{
     unsigned int   biRedMask;
     unsigned int   biGreenMask;
     unsigned int   biBlueMask;
-    unsigned int   biAlphaMask;
-    unsigned int   biCSType;
-    CIEXYZTRIPLE   biEndpoints;
-    unsigned int   biGammaRed;
-    unsigned int   biGammaGreen;
-    unsigned int   biGammaBlue;
-    unsigned int   biIntent;
-    unsigned int   biProfileData;
-    unsigned int   biProfileSize;
-    unsigned int   biReserved;
+
 } ;
 
 // rgb quad

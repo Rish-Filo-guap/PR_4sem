@@ -26,21 +26,18 @@ int main()
 
 
 	read = ReadBMPfile(filename);
-    //cout<<"\t bmp read";
     WriteBinFile(read, name, 1);
-    //cout<<"\t bin write";
 
 
     binread = ReadBinFile(name);
-    //cout<<"\t bin read";
 
 
 
     thread th(WriteBMPfile,read, filename, 0);
-    //WriteBMPfile(read, filename);
+
+    WriteBMPfile(read, "wb_"+filename, 1);
 
     WriteBMPfile(binread,"new_" +filename, 1);
-    //cout<<"\t bmps write"<<endl;
 
 
     th.join();
