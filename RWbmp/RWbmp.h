@@ -11,29 +11,29 @@
 // CIEXYZTRIPLE stuff
 typedef int FXPT2DOT30;
 
-typedef struct {
+ struct CIEXYZ{
     FXPT2DOT30 ciexyzX;
     FXPT2DOT30 ciexyzY;
     FXPT2DOT30 ciexyzZ;
-} CIEXYZ;
+} ;
 
-typedef struct {
+ struct CIEXYZTRIPLE{
     CIEXYZ  ciexyzRed;
     CIEXYZ  ciexyzGreen;
     CIEXYZ  ciexyzBlue;
-} CIEXYZTRIPLE;
+} ;
 
 // bitmap file header
-typedef struct {
+struct BITMAPFILEHEADER{
     unsigned short bfType;
     unsigned int   bfSize;
     unsigned short bfReserved1;
     unsigned short bfReserved2;
     unsigned int   bfOffBits;
-} BITMAPFILEHEADER;
+} ;
 
 // bitmap info header
-typedef struct {
+ struct BITMAPINFOHEADER{
     unsigned int   biSize;
     unsigned int   biWidth;
     unsigned int   biHeight;
@@ -58,20 +58,20 @@ typedef struct {
     unsigned int   biProfileData;
     unsigned int   biProfileSize;
     unsigned int   biReserved;
-} BITMAPINFOHEADER;
+} ;
 
 // rgb quad
-typedef struct {
+ struct RGBQUAD {
     unsigned char  rgbBlue;
     unsigned char  rgbGreen;
     unsigned char  rgbRed;
     unsigned char  rgbReserved;
-} RGBQUAD;
+} ;
+
 struct ReadBMP{
     RGBQUAD** pixels;
     BITMAPINFOHEADER infoheader;
     BITMAPFILEHEADER fileheader;
-    const char* name;
 };
 // read bytes
 template <typename Type>
@@ -85,4 +85,6 @@ unsigned char bitextract(const unsigned int byte, const unsigned int mask);
 static void write_u16(unsigned short input, FILE* fp);
 static void write_u32(unsigned int input, FILE* fp);
 
+ReadBMP ReadBMPfile(std::string fileName);
+void WriteBMPfile(ReadBMP readBMP, std::string filename);
 

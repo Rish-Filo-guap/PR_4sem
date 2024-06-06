@@ -5,21 +5,24 @@
 #include <fstream>
 #include <cstdio>
 
-#include "bmpRW.h"
+#include "RWbmp.h"
+
 using namespace std;
 
-ReadBMP ReadBMPfile(const char* fileName)
+
+
+ReadBMP ReadBMPfile(string fileName)
 {
 
 
     // открываем файл
-    const char* folder = "images/old/";
+    string folder = "images/old/";
     string newName = folder;
     newName += fileName;
     std::ifstream fileStream(newName.c_str(), std::ifstream::binary);
 
 
-    // заголовк изображения
+    // заголовки изображения
     BITMAPFILEHEADER fileHeader;
     read(fileStream, fileHeader.bfType, sizeof(fileHeader.bfType));
     read(fileStream, fileHeader.bfSize, sizeof(fileHeader.bfSize));
@@ -107,14 +110,14 @@ ReadBMP ReadBMPfile(const char* fileName)
 
     // вывод
     ReadBMP read;
-    read.name = fileName;
+    //read.name = fileName.c_str();
     read.pixels = rgbInfo;
     read.infoheader = fileInfoHeader;
     read.fileheader = fileHeader;
 
     return read;
 }
-void WriteBMPfile(ReadBMP readBMP) {
+void WriteBMPfile(ReadBMP readBMP, string filename) {
 
 
     FILE* oFile;
@@ -122,8 +125,8 @@ void WriteBMPfile(ReadBMP readBMP) {
     const char* folder = "images/new/";
     string newName = folder;
 
-    newName += readBMP.name;
-
+    newName += filename;
+   // cout<<"rw "<<filename<<endl;
     oFile = fopen( newName.c_str(), "wb");
 
 
@@ -165,25 +168,27 @@ void WriteBMPfile(ReadBMP readBMP) {
 
 
     // rgb info
-    RGBQUAD** rgbInfo = new RGBQUAD * [readBMP.infoheader.biHeight];
-
-    for (unsigned int i = 0; i < readBMP.infoheader.biHeight; i++) {
-        rgbInfo[i] = new RGBQUAD[readBMP.infoheader.biWidth];
-    }
+//    RGBQUAD** rgbInfo = new RGBQUAD * [readBMP.infoheader.biHeight];
+//
+//    for (unsigned int i = 0; i < readBMP.infoheader.biHeight; i++) {
+//        rgbInfo[i] = new RGBQUAD[readBMP.infoheader.biWidth];
+//    }
 
 
 
 
     for (unsigned int i = 0; i < readBMP.infoheader.biHeight; i++) {
         for (unsigned int j = 0; j < readBMP.infoheader.biWidth; j++) {
-            unsigned char graypixel = readBMP.pixels[i][j].rgbRed * 0.2126 + 0.7152 * readBMP.pixels[i][j].rgbGreen + readBMP.pixels[i][j].rgbBlue * 0.0722;
+            //unsigned char graypixel = readBMP.pixels[i][j].rgbRed * 0.2126 + 0.7152 * readBMP.pixels[i][j].rgbGreen + readBMP.pixels[i][j].rgbBlue * 0.0722;
+
+            /*putc(graypixel & 0xFF, oFile);
             putc(graypixel & 0xFF, oFile);
-            putc(graypixel & 0xFF, oFile);
-            putc(graypixel & 0xFF, oFile);
-            //rgbInfo[i][j].rgbRed = bitextract(bufer, fileInfoHeader.biRedMask);
-            //rgbInfo[i][j].rgbGreen = bitextract(bufer, fileInfoHeader.biGreenMask);
-            //rgbInfo[i][j].rgbBlue = bitextract(bufer, fileInfoHeader.biBlueMask);
-            //rgbInfo[i][j].rgbReserved = bitextract(bufer, fileInfoHeader.biAlphaMask);
+            putc(graypixel & 0xFF, oFile);*/
+
+            putc(readBMP.pixels[i][j].rgbBlue & 0xFF, oFile);
+            putc(readBMP.pixels[i][j].rgbGreen & 0xFF, oFile);
+            putc(readBMP.pixels[i][j].rgbRed & 0xFF, oFile);
+
         }
 
     }
