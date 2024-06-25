@@ -33,14 +33,14 @@ int main()
 
 
 
-    thread th(WriteBMPfile,read, filename, 0);
+    //thread th(WriteBMPfile,read, filename, 0);
+   // cout<<filename<<"))"<<endl;
+    //WriteBMPfile(read, "wb_"+filename, 1);
 
-    WriteBMPfile(read, "wb_"+filename, 1);
-
-    WriteBMPfile(binread,"new_" +filename, 1);
+    WriteBMPfile(binread,"new_" +filename);
 
 
-    th.join();
+   // th.join();
 
     }
     auto end = chrono::system_clock::now();

@@ -6,7 +6,7 @@
 #include <cstdio>
 
 #include "RWbmp.h"
-
+#include "../forAll/forAll.h"
 using namespace std;
 
 
@@ -87,11 +87,12 @@ ReadBMP ReadBMPfile(string fileName)
         for (unsigned int j = 0; j < fileInfoHeader.biWidth; j++) {
             read(fileStream, bufer, fileInfoHeader.biBitCount / 8);
 
+            //читаем цвет
             rgbInfo[i][j].rgbRed = bitextract(bufer, fileInfoHeader.biRedMask);
             rgbInfo[i][j].rgbGreen = bitextract(bufer, fileInfoHeader.biGreenMask);
             rgbInfo[i][j].rgbBlue = bitextract(bufer, fileInfoHeader.biBlueMask);
 
-
+            //делаем чб
             rgbInfo[i][j].grayPixel = rgbInfo[i][j].rgbRed * 0.2126 +
                                       rgbInfo[i][j].rgbGreen* 0.7152 +
                                       rgbInfo[i][j].rgbBlue * 0.0722;
@@ -112,6 +113,9 @@ ReadBMP ReadBMPfile(string fileName)
 
     return read;
 }
+void WriteBMPfile(ReadBMP readBMP, string filename) {
+    WriteBMPfile(readBMP,filename, readBMP.infoheader.mode);
+}
 void WriteBMPfile(ReadBMP readBMP, string filename, int mode) {
 
 
@@ -119,6 +123,8 @@ void WriteBMPfile(ReadBMP readBMP, string filename, int mode) {
 
     const char* folder = "images/new/";
     string newName = folder;
+    //приставка цвет или чб
+    newName+= GetModeStr(mode);
 
     newName += filename;
     oFile = fopen( newName.c_str(), "wb");
@@ -159,12 +165,14 @@ void WriteBMPfile(ReadBMP readBMP, string filename, int mode) {
 
             switch (mode) {
                 case 0:{
+                    //пишем цвет
                     putc(readBMP.pixels[i][j].rgbBlue & 0xFF, oFile);
                     putc(readBMP.pixels[i][j].rgbGreen & 0xFF, oFile);
                     putc(readBMP.pixels[i][j].rgbRed & 0xFF, oFile);
                     break;
                 }
                 case 1:{
+                    //пишем чб
                     putc(readBMP.pixels[i][j].grayPixel & 0xFF, oFile);
                     putc(readBMP.pixels[i][j].grayPixel & 0xFF, oFile);
                     putc(readBMP.pixels[i][j].grayPixel & 0xFF, oFile);

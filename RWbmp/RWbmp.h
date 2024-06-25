@@ -40,6 +40,7 @@ struct BITMAPFILEHEADER{
     unsigned int   biRedMask;
     unsigned int   biGreenMask;
     unsigned int   biBlueMask;
+    unsigned int   mode;
 
 } ;
 
@@ -70,4 +71,5 @@ static void write_u32(unsigned int input, FILE* fp);
 
 ReadBMP ReadBMPfile(std::string fileName);
 void WriteBMPfile(ReadBMP readBMP, std::string filename, int mode);
+void WriteBMPfile(ReadBMP readBMP, std::string filename);
 

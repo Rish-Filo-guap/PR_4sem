@@ -8,4 +8,6 @@ add_executable(PR_4sem main.cpp
         RWbmp/RWbmp.cpp
         RWbin/RWbin.cpp
         RWbin/RWbin.h
+        forAll/forAll.h
+        forAll/forAll.cpp
 )

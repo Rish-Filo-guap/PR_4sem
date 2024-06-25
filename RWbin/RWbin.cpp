@@ -7,10 +7,33 @@
 #include <string>
 
 #include "../RWbmp/RWbmp.h"
+#include "../forAll/forAll.h"
 using  namespace std;
+
+void ReadFileHeader(ReadBMP &readB,string headerName);
+void ReadBinFilePixels(ReadBMP &readB,string pixelsName, int mode);
 
 void WriteBinFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biHeight, string filename, int mode);
 void WriteFileHeader(BITMAPINFOHEADER infoheader, BITMAPFILEHEADER fileheader, string filename, int mode);
+
+ReadBMP ReadBinFile(string filename){
+
+    string newName = "images/bin/";
+
+    //newName+=filename;
+    string headerName =newName + "header_" +filename+ ".txt";
+
+    ReadBMP readB;
+    ReadFileHeader(readB, headerName);
+    int mode=readB.infoheader.mode;
+
+    newName+= GetModeStr(mode);
+    string pixelsName =newName + "_pixels_"+ filename+   ".bin";
+
+    ReadBinFilePixels(readB, pixelsName, mode);
+    return readB;
+
+}
 
 
 void WriteBinFile(ReadBMP readBMP, string filename, int mode){
@@ -18,9 +41,12 @@ void WriteBinFile(ReadBMP readBMP, string filename, int mode){
 
     string newName = "images/bin/";
 
-    newName+=filename;
-    string headerName = newName+"_header.txt";
-    string pixelsName = newName + "_pixels.bin";
+    //newName+=filename;
+    string headerName =newName + "header_" +filename+ ".txt";
+    //string headerName = newName+"_header.txt";
+    newName+= GetModeStr(mode);
+    string pixelsName =newName + "_pixels_"+ filename+   ".bin";
+    //string pixelsName = newName + "_pixels.bin";
 
     WriteBinFilePixels(readBMP.pixels, readBMP.infoheader.biWidth, readBMP.infoheader.biHeight, pixelsName, mode);
     WriteFileHeader(readBMP.infoheader, readBMP.fileheader, headerName, mode);
@@ -100,7 +126,7 @@ void WriteFileHeader(BITMAPINFOHEADER infoheader, BITMAPFILEHEADER fileheader, s
     write_short(mode, &oFile);
     oFile.close();
 }
-void ReadFileHeader(ReadBMP &readB,string headerName, int &mode){
+void ReadFileHeader(ReadBMP &readB,string headerName){
     ifstream in(headerName);
     string line;
     if(in.is_open()){
@@ -157,8 +183,7 @@ void ReadFileHeader(ReadBMP &readB,string headerName, int &mode){
         readB.infoheader.biClrImportant = stoi(line);
 
         getline(in, line);
-        mode = stoi(line);
-
+        readB.infoheader.mode = stoi(line);
 
     }
     in.close();
@@ -208,19 +233,3 @@ void ReadBinFilePixels(ReadBMP &readB,string pixelsName, int mode){
     fileStream.close();
 }
 
-ReadBMP ReadBinFile(string filename){
-
-    string newName = "images/bin/";
-
-    newName+=filename;
-    string headerName = newName + "_header.txt";
-    string pixelsName = newName + "_pixels.bin";
-
-    ReadBMP readB;
-    int mode;
-
-    ReadFileHeader(readB, headerName, mode);
-    ReadBinFilePixels(readB, pixelsName, mode);
-    return readB;
-
-}
