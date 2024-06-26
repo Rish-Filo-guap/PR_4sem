@@ -6,7 +6,7 @@
 #include <cstdio>
 
 #include "RWbmp.h"
-#include "../forAll/forAll.h"
+
 using namespace std;
 
 
@@ -169,6 +169,9 @@ void WriteBMPfile(ReadBMP readBMP, string filename, int mode) {
                     putc(readBMP.pixels[i][j].rgbBlue & 0xFF, oFile);
                     putc(readBMP.pixels[i][j].rgbGreen & 0xFF, oFile);
                     putc(readBMP.pixels[i][j].rgbRed & 0xFF, oFile);
+//                    cout<<(int)readBMP.pixels[i][j].rgbBlue<<"\t ";
+//                    cout<<(int)readBMP.pixels[i][j].rgbGreen<<"\t ";
+//                    cout<<(int)readBMP.pixels[i][j].rgbRed<<"\t "<<endl;
                     break;
                 }
                 case 1:{
@@ -206,6 +209,7 @@ unsigned char bitextract(const unsigned int byte, const unsigned int mask) {
     // применение маски и смещение
     return (byte & mask) >> maskPadding;
 }
+
 static void write_u16(unsigned short input, FILE* fp)
 {
     putc(input, fp);

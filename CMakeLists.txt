@@ -4,10 +4,12 @@ project(PR_4sem)
 set(CMAKE_CXX_STANDARD 17)
 
 add_executable(PR_4sem main.cpp
+        forAll/forAll.h
+        forAll/forAll.cpp
         RWbmp/RWbmp.h
         RWbmp/RWbmp.cpp
         RWbin/RWbin.cpp
         RWbin/RWbin.h
-        forAll/forAll.h
-        forAll/forAll.cpp
+        RWrle/RWrle.h
+        RWrle/RWrle.cpp
 )

@@ -7,14 +7,11 @@
 #include <string>
 
 #include "../RWbmp/RWbmp.h"
-#include "../forAll/forAll.h"
+
+#include "RWbin.h"
 using  namespace std;
 
-void ReadFileHeader(ReadBMP &readB,string headerName);
-void ReadBinFilePixels(ReadBMP &readB,string pixelsName, int mode);
 
-void WriteBinFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biHeight, string filename, int mode);
-void WriteFileHeader(BITMAPINFOHEADER infoheader, BITMAPFILEHEADER fileheader, string filename, int mode);
 
 ReadBMP ReadBinFile(string filename){
 
@@ -63,13 +60,13 @@ void WriteBinFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biH
 
             switch(mode){
                 case 0:{
-                    putc(pixels[i][j].rgbBlue & 0xFF, oFile);
-                    putc(pixels[i][j].rgbGreen & 0xFF, oFile);
-                    putc(pixels[i][j].rgbRed & 0xFF, oFile);
+                    putc(pixels[i][j].rgbBlue, oFile);
+                    putc(pixels[i][j].rgbGreen, oFile);
+                    putc(pixels[i][j].rgbRed, oFile);
                     break;
                 }
                 case 1:{
-                    putc(pixels[i][j].grayPixel & 0xFF, oFile);
+                    putc(pixels[i][j].grayPixel, oFile);
                     break;
                 }
             }
@@ -81,113 +78,9 @@ void WriteBinFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biH
     fclose(oFile);
 
 }
-void write_int(unsigned int a, ofstream* out){
-    *out<<a<<endl;
-}
-void write_short(unsigned short a, ofstream* out){
-    *out<<a<<endl;
-}
-
-void WriteFileHeader(BITMAPINFOHEADER infoheader, BITMAPFILEHEADER fileheader, string filename, int mode){
-
-    ofstream oFile;
-    oFile.open(filename);
 
 
-    // заголовк изображения
 
-    write_short(fileheader.bfType, &oFile);
-    write_int(fileheader.bfSize, &oFile);
-    write_short(fileheader.bfReserved1, &oFile);
-    write_short(fileheader.bfReserved2, &oFile);
-    write_int(fileheader.bfOffBits, &oFile);
-
-    // информация изображения
-
-    write_int(infoheader.biSize, &oFile);
-
-    // bmp core
-
-        write_int(infoheader.biWidth, &oFile);
-        write_int(infoheader.biHeight, &oFile);
-        write_short(infoheader.biPlanes, &oFile);
-        write_short(infoheader.biBitCount, &oFile);
-
-
-    // bmp v1
-
-        write_int(infoheader.biCompression, &oFile);
-        write_int(infoheader.biSizeImage, &oFile);
-        write_int(infoheader.biXPelsPerMeter, &oFile);
-        write_int(infoheader.biYPelsPerMeter, &oFile);
-        write_int(infoheader.biClrUsed, &oFile);
-        write_int(infoheader.biClrImportant, &oFile);
-
-    write_short(mode, &oFile);
-    oFile.close();
-}
-void ReadFileHeader(ReadBMP &readB,string headerName){
-    ifstream in(headerName);
-    string line;
-    if(in.is_open()){
-        getline(in, line);
-        readB.fileheader.bfType = stoi(line);
-
-
-        getline(in, line);
-        readB.fileheader.bfSize = stoi(line);
-
-        getline(in, line);
-        readB.fileheader.bfReserved1 = stoi(line);
-
-        getline(in, line);
-        readB.fileheader.bfReserved2 = stoi(line);
-
-        getline(in, line);
-        readB.fileheader.bfOffBits = stoi(line);
-
-
-        getline(in, line);
-        readB.infoheader.biSize = stoi(line);
-
-
-        getline(in, line);
-        readB.infoheader.biWidth = stoi(line);
-
-        getline(in, line);
-        readB.infoheader.biHeight = stoi(line);
-
-        getline(in, line);
-        readB.infoheader.biPlanes = stoi(line);
-
-        getline(in, line);
-        readB.infoheader.biBitCount = stoi(line);
-
-
-        getline(in, line);
-        readB.infoheader.biCompression = stoi(line);
-
-        getline(in, line);
-        readB.infoheader.biSizeImage = stoi(line);
-
-        getline(in, line);
-        readB.infoheader.biXPelsPerMeter= stoi(line);
-
-        getline(in, line);
-        readB.infoheader.biYPelsPerMeter = stoi(line);
-
-        getline(in, line);
-        readB.infoheader.biClrUsed = stoi(line);
-
-        getline(in, line);
-        readB.infoheader.biClrImportant = stoi(line);
-
-        getline(in, line);
-        readB.infoheader.mode = stoi(line);
-
-    }
-    in.close();
-}
 void ReadBinFilePixels(ReadBMP &readB,string pixelsName, int mode){
 
     ifstream fileStream(pixelsName, ifstream::binary);
