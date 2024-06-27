@@ -18,7 +18,7 @@ int main()
     ReadBMP rleread;
     ReadBMP read;
     auto start = chrono::system_clock::now();
-    for (int i = 17; i <= 17; i++) {
+    for (int i = 1; i <= 16; i++) {
 
     stringstream ss;
     ss << i;

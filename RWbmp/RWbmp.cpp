@@ -179,6 +179,7 @@ void WriteBMPfile(ReadBMP readBMP, string filename, int mode) {
                     putc(readBMP.pixels[i][j].grayPixel & 0xFF, oFile);
                     putc(readBMP.pixels[i][j].grayPixel & 0xFF, oFile);
                     putc(readBMP.pixels[i][j].grayPixel & 0xFF, oFile);
+                    //cout<<(int)readBMP.pixels[i][j].grayPixel << endl;
                     break;
                 }
 
@@ -189,6 +190,7 @@ void WriteBMPfile(ReadBMP readBMP, string filename, int mode) {
 
     }
     fclose(oFile);
+   // cout<<endl;
 
 }
 unsigned char bitextract(const unsigned int byte, const unsigned int mask) {

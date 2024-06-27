@@ -46,6 +46,7 @@ void ReadRLEFilePixels(ReadBMP &readB,string pixelsName, int mode) {
 
     ifstream fileStream(pixelsName, ifstream::binary);
 
+
     RGBQUAD **rgbInfo = new RGBQUAD *[readB.infoheader.biHeight];
 
     for (unsigned int i = 0; i < readB.infoheader.biHeight; i++) {
@@ -71,13 +72,13 @@ void ReadRLEFilePixels(ReadBMP &readB,string pixelsName, int mode) {
                         read(fileStream, count, 4);
                         read(fileStream, bufer, 1);
 
-                        cout<<endl<<(int)bufer;
-
+                        //cout<<i<<" "<<j<<endl;
                     }
                     rgbInfo[i][j].grayPixel = bufer;
+                    //cout<<bufer;
                     count--;
                     //cout<<count<<" ";
-                    //cout<<count<<"\t"<<(int)bufer<<endl;
+                    //cout<<"\t"<<(int)bufer<<endl;
 
 
                     //cout<<(char)bufer;
@@ -142,17 +143,16 @@ void WriteRLEFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biH
     for (unsigned int i = 0; i < biHeight; i++) {
         for (unsigned int j = 0; j < biWidth; j++) {
 
-            switch(mode){
-                case 0:{
-//                    putc(pixels[i][j].rgbBlue & 0xFF, oFile);
-//                    putc(pixels[i][j].rgbGreen & 0xFF, oFile);
-//                    putc(pixels[i][j].rgbRed & 0xFF, oFile);
-                    break;
-                }
-                case 1:{
+//            switch(mode){
+//                case 0:{
+////                    putc(pixels[i][j].rgbBlue & 0xFF, oFile);
+////                    putc(pixels[i][j].rgbGreen & 0xFF, oFile);
+////                    putc(pixels[i][j].rgbRed & 0xFF, oFile);
+//                    break;
+//                }
+//                case 1:{
                     if (pre !=pixels[i][j].grayPixel){
 
-                        pre = pixels[i][j].grayPixel;
                         //putc(count, oFile);
                         putc(count, oFile);
                         putc(count >> 8, oFile);
@@ -160,23 +160,28 @@ void WriteRLEFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biH
                         putc(count >> 24, oFile);
                         //write_u32(count, oFile);
                         putc(pre, oFile);
+                        pre = pixels[i][j].grayPixel;
                         //cout<<count<<"\t"<<(int)pre<<endl;
                         count =1;
-                        countz++;
-                    }else{
-                        if(count>countmax) countmax=count;
+                        //countz++;
+                    }else
                         count++;
-                    }
+                    //else{
+                      //  if(count>countmax) countmax=count;
+                    //}
 
-                    break;
-                }
-            }
+//                    break;
+//                }
+//            }
 
 
         }
 
     }
     putc(count, oFile);
+    putc(count >> 8, oFile);
+    putc(count >> 16, oFile);
+    putc(count >> 24, oFile);
     putc(pre, oFile);
     float d= (float)(biHeight*biWidth) / countz;
     cout<<d<<" "<<countmax<<endl;
