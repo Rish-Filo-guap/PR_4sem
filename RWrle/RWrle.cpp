@@ -57,26 +57,30 @@ void ReadRLEFilePixels(ReadBMP &readB,string pixelsName, int mode) {
 
     //cout<<"```````````";
     int count = 0;
+    //read(fileStream, count, 4);
+    //read(fileStream, bufer, 1);
+
+
     for (unsigned int i = 0; i < readB.infoheader.biHeight; i++) {
         for (unsigned int j = 0; j < readB.infoheader.biWidth; j++) {
             // cout<<fileStream.gcount()<<endl;
-            switch (mode) {
+           // switch (mode) {
 
-                case 0: {
+             //   case 0: {
 
 
-                    break;
-                }
-                case 1: {
+               //     break;
+                //}
+               // case 1: {
                     if (count == 0) {
                         read(fileStream, count, 4);
                         read(fileStream, bufer, 1);
 
                         //cout<<i<<" "<<j<<endl;
                     }
+                    count--;
                     rgbInfo[i][j].grayPixel = bufer;
                     //cout<<bufer;
-                    count--;
                     //cout<<count<<" ";
                     //cout<<"\t"<<(int)bufer<<endl;
 
@@ -103,15 +107,14 @@ void ReadRLEFilePixels(ReadBMP &readB,string pixelsName, int mode) {
 //                    //}
 //                    }
 //                        //if (count==1) cout<<j<<"\t "<<i<<"\t "<<bufer<<"\t "<<count<<endl;
-                    break;
-                }
-            }
+                 //   break;
+               // }
+           // }
 
 
         }
 
     }
-
 
     readB.pixels = rgbInfo;
     fileStream.close();
@@ -151,7 +154,7 @@ void WriteRLEFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biH
 //                    break;
 //                }
 //                case 1:{
-                    if (pre !=pixels[i][j].grayPixel){
+                    if (pre != pixels[i][j].grayPixel){
 
                         //putc(count, oFile);
                         putc(count, oFile);
@@ -183,8 +186,8 @@ void WriteRLEFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biH
     putc(count >> 16, oFile);
     putc(count >> 24, oFile);
     putc(pre, oFile);
-    float d= (float)(biHeight*biWidth) / countz;
-    cout<<d<<" "<<countmax<<endl;
+    //float d= (float)(biHeight*biWidth) / countz;
+    //cout<<d<<" "<<countmax<<endl;
     fclose(oFile);
 
 }
