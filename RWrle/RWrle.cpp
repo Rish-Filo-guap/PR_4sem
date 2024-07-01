@@ -59,6 +59,8 @@ void ReadRLEFilePixels(ReadBMP &readB,string pixelsName, int mode) {
     int count = 0;
     //read(fileStream, count, 4);
     //read(fileStream, bufer, 1);
+   // read(fileStream, count, 4);
+    //read(fileStream, bufer, 1);
 
 
     for (unsigned int i = 0; i < readB.infoheader.biHeight; i++) {
@@ -80,6 +82,7 @@ void ReadRLEFilePixels(ReadBMP &readB,string pixelsName, int mode) {
                     }
                     count--;
                     rgbInfo[i][j].grayPixel = bufer;
+                   // cout<<i<<"\t"<<j<<endl;
                     //cout<<bufer;
                     //cout<<count<<" ";
                     //cout<<"\t"<<(int)bufer<<endl;
@@ -127,7 +130,7 @@ void WriteRLEFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biH
 
     FILE *oFile;
     oFile = fopen( filename.c_str(), "wb");
-    int count =1;
+    int count =0;
     int countz = 0;
     int countmax = 0;
 
@@ -154,6 +157,7 @@ void WriteRLEFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biH
 //                    break;
 //                }
 //                case 1:{
+            //cout<<i<<"\t"<<j<<endl;
                     if (pre != pixels[i][j].grayPixel){
 
                         //putc(count, oFile);
