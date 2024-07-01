@@ -126,12 +126,8 @@ void WriteBMPfile(ReadBMP readBMP, string filename, int mode) {
     string newName = folder;
     //приставка цвет или чб
     newName+= GetModeStr(mode);
-   // string testname="images/new/";
-   // testname+= "test.txt";
     newName += filename;
     oFile = fopen( newName.c_str(), "wb");
-   // std::ofstream out;          // поток для записи
-    //out.open(testname);
 
 
     // заголовк изображения
@@ -173,9 +169,7 @@ void WriteBMPfile(ReadBMP readBMP, string filename, int mode) {
                     putc(readBMP.pixels[i][j].rgbBlue & 0xFF, oFile);
                     putc(readBMP.pixels[i][j].rgbGreen & 0xFF, oFile);
                     putc(readBMP.pixels[i][j].rgbRed & 0xFF, oFile);
-//                    cout<<(int)readBMP.pixels[i][j].rgbBlue<<"\t ";
-//                    cout<<(int)readBMP.pixels[i][j].rgbGreen<<"\t ";
-//                    cout<<(int)readBMP.pixels[i][j].rgbRed<<"\t "<<endl;
+
                     break;
                 }
                 case 1:{
@@ -183,10 +177,7 @@ void WriteBMPfile(ReadBMP readBMP, string filename, int mode) {
                     putc(readBMP.pixels[i][j].grayPixel & 0xFF, oFile);
                     putc(readBMP.pixels[i][j].grayPixel & 0xFF, oFile);
                     putc(readBMP.pixels[i][j].grayPixel & 0xFF, oFile);
-                    //string test = i + " " + j + " " + (int)readBMP.pixels[i][j].grayPixel;
-                    //putc(test.c_str(), tFile);
-                   // out<<i<<"\t"<<j<<"\t"<<(int)readBMP.pixels[i][j].grayPixel<<endl;
-                    //cout<<(int)readBMP.pixels[i][j].grayPixel << endl;
+
                     break;
                 }
 
@@ -197,7 +188,6 @@ void WriteBMPfile(ReadBMP readBMP, string filename, int mode) {
 
     }
     fclose(oFile);
-   // cout<<endl;
 
 }
 unsigned char bitextract(const unsigned int byte, const unsigned int mask) {

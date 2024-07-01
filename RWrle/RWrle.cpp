@@ -6,7 +6,6 @@
 #include <thread>
 #include <string>
 
-//#include "../RWbmp/RWbmp.h"
 #include "RWrle.h"
 
 
@@ -14,12 +13,9 @@ void WriteRLEFile(ReadBMP readBMP, std::string filename ,int mode){
 
     string newName = "images/rle/";
 
-    //newName+=filename;
     string headerName =newName + "header_" +filename+ ".txt";
-    //string headerName = newName+"_header.txt";
     newName+= GetModeStr(mode);
     string pixelsName =newName + "_pixels_"+ filename+   ".bin";
-    //string pixelsName = newName + "_pixels.bin";
 
     WriteRLEFilePixels(readBMP.pixels, readBMP.infoheader.biWidth, readBMP.infoheader.biHeight, pixelsName, mode);
     WriteFileHeader(readBMP.infoheader, readBMP.fileheader, headerName, mode);
@@ -29,7 +25,6 @@ void WriteRLEFile(ReadBMP readBMP, std::string filename ,int mode){
 ReadBMP ReadRLEFile(std::string filename){
     string newName = "images/rle/";
 
-    //newName+=filename;
     string headerName =newName + "header_" +filename+ ".txt";
     ReadBMP readB;
     ReadFileHeader(readB, headerName);
@@ -52,146 +47,142 @@ void ReadRLEFilePixels(ReadBMP &readB,string pixelsName, int mode) {
     for (unsigned int i = 0; i < readB.infoheader.biHeight; i++) {
         rgbInfo[i] = new RGBQUAD[readB.infoheader.biWidth];
     }
+    switch (mode) {
 
-    unsigned char bufer;
+        case 0: {
+            unsigned char buferR;
+            unsigned char buferG;
+            unsigned char buferB;
+            int count = 0;
+            for (unsigned int i = 0; i < readB.infoheader.biHeight; i++) {
+                for (unsigned int j = 0; j < readB.infoheader.biWidth; j++) {
 
-    //cout<<"```````````";
-    int count = 0;
-    //read(fileStream, count, 4);
-    //read(fileStream, bufer, 1);
-   // read(fileStream, count, 4);
-    //read(fileStream, bufer, 1);
-
-
-    for (unsigned int i = 0; i < readB.infoheader.biHeight; i++) {
-        for (unsigned int j = 0; j < readB.infoheader.biWidth; j++) {
-            // cout<<fileStream.gcount()<<endl;
-           // switch (mode) {
-
-             //   case 0: {
+                    if (count == 0) {
+                        read(fileStream, count, 4);
+                        read(fileStream, buferR, 1);
+                        read(fileStream, buferG, 1);
+                        read(fileStream, buferB, 1);
 
 
-               //     break;
-                //}
-               // case 1: {
+                    }
+                    count--;
+                    rgbInfo[i][j].rgbRed = buferR;
+                    rgbInfo[i][j].rgbGreen = buferG;
+                    rgbInfo[i][j].rgbBlue = buferB;
+
+
+                }
+
+            }
+            break;
+        }
+        case 1: {
+            unsigned char bufer;
+            int count = 0;
+
+            for (unsigned int i = 0; i < readB.infoheader.biHeight; i++) {
+                for (unsigned int j = 0; j < readB.infoheader.biWidth; j++) {
+
                     if (count == 0) {
                         read(fileStream, count, 4);
                         read(fileStream, bufer, 1);
-
-                        //cout<<i<<" "<<j<<endl;
                     }
                     count--;
                     rgbInfo[i][j].grayPixel = bufer;
-                   // cout<<i<<"\t"<<j<<endl;
-                    //cout<<bufer;
-                    //cout<<count<<" ";
-                    //cout<<"\t"<<(int)bufer<<endl;
+                }
+
+            }
 
 
-                    //cout<<(char)bufer;
-//                    while(count>0){
-//                        count--;
-//                        //cout<<j<<"\t "<<i<<"\t "<<bufer<<"\t "<<count<<endl;
-//                    //for(int k=0; k<count && i<readB.infoheader.biHeight-1;k++){
-//                        rgbInfo[j][i].grayPixel = bufer;
-//                        i++;
-//                        //cout<<i<<"\t "<<j<<"\t "<<bufer<<"\t "<<count<<endl;
-//                        if(i>=readB.infoheader.biWidth){
-//                            i=0;
-//                            j++;
-//
-//                            //cout<<i<<" ";
-//                        }
-//                        if (j>=readB.infoheader.biHeight){
-//                            break;
-//                        }
-//                        //cout<<count<<"!"<<endl;
-//                        //cout<<j<<endl;
-//                    //}
-//                    }
-//                        //if (count==1) cout<<j<<"\t "<<i<<"\t "<<bufer<<"\t "<<count<<endl;
-                 //   break;
-               // }
-           // }
-
-
+            break;
         }
-
     }
-
     readB.pixels = rgbInfo;
     fileStream.close();
-
-
-
-
+}
+bool RGBQUADIsEqual(RGBQUAD a, RGBQUAD b){
+    if (a.rgbRed == b.rgbRed && a.rgbGreen == b.rgbGreen && a.rgbBlue == b.rgbBlue)
+        return true;
+    else
+        return false;
 }
 void WriteRLEFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biHeight, string filename, int mode){
 
     FILE *oFile;
     oFile = fopen( filename.c_str(), "wb");
     int count =0;
-    int countz = 0;
-    int countmax = 0;
-
-    unsigned char pre;
 
     switch(mode) {
         case 0: {
-            break;
-        }
-        case 1: {
 
-            pre = pixels[0][0].grayPixel;
-            break;
-        }
-    }
-    for (unsigned int i = 0; i < biHeight; i++) {
-        for (unsigned int j = 0; j < biWidth; j++) {
+            RGBQUAD pre;
+            pre = pixels[0][0];
 
-//            switch(mode){
-//                case 0:{
-////                    putc(pixels[i][j].rgbBlue & 0xFF, oFile);
-////                    putc(pixels[i][j].rgbGreen & 0xFF, oFile);
-////                    putc(pixels[i][j].rgbRed & 0xFF, oFile);
-//                    break;
-//                }
-//                case 1:{
-            //cout<<i<<"\t"<<j<<endl;
-                    if (pre != pixels[i][j].grayPixel){
+            for (unsigned int i = 0; i < biHeight; i++) {
+                for (unsigned int j = 0; j < biWidth; j++) {
 
-                        //putc(count, oFile);
+                    if (!RGBQUADIsEqual(pre,pixels[i][j])){
+
                         putc(count, oFile);
                         putc(count >> 8, oFile);
                         putc(count >> 16, oFile);
                         putc(count >> 24, oFile);
-                        //write_u32(count, oFile);
+
+                        putc(pre.rgbRed, oFile);
+                        putc(pre.rgbGreen, oFile);
+                        putc(pre.rgbBlue, oFile);
+                        pre = pixels[i][j];
+                        count =1;
+                    }
+                    else count++;
+                }
+            }
+
+            putc(count, oFile);
+            putc(count >> 8, oFile);
+            putc(count >> 16, oFile);
+            putc(count >> 24, oFile);
+
+            putc(pre.rgbRed, oFile);
+            putc(pre.rgbGreen, oFile);
+            putc(pre.rgbBlue, oFile);
+
+            break;
+        }
+        case 1: {
+
+            unsigned char pre;
+            pre = pixels[0][0].grayPixel;
+
+            for (unsigned int i = 0; i < biHeight; i++) {
+                for (unsigned int j = 0; j < biWidth; j++) {
+
+                    if (pre != pixels[i][j].grayPixel){
+
+                        putc(count, oFile);
+                        putc(count >> 8, oFile);
+                        putc(count >> 16, oFile);
+                        putc(count >> 24, oFile);
+
                         putc(pre, oFile);
                         pre = pixels[i][j].grayPixel;
-                        //cout<<count<<"\t"<<(int)pre<<endl;
+
                         count =1;
-                        //countz++;
-                    }else
-                        count++;
-                    //else{
-                      //  if(count>countmax) countmax=count;
-                    //}
+                    }
+                    else count++;
+                }
+            }
 
-//                    break;
-//                }
-//            }
+            putc(count, oFile);
+            putc(count >> 8, oFile);
+            putc(count >> 16, oFile);
+            putc(count >> 24, oFile);
+            putc(pre, oFile);
 
-
+            break;
         }
-
     }
-    putc(count, oFile);
-    putc(count >> 8, oFile);
-    putc(count >> 16, oFile);
-    putc(count >> 24, oFile);
-    putc(pre, oFile);
-    //float d= (float)(biHeight*biWidth) / countz;
-    //cout<<d<<" "<<countmax<<endl;
+
     fclose(oFile);
 
 }

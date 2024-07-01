@@ -30,8 +30,8 @@ int main()
 
 
 	read = ReadBMPfile(filename);
-    WriteBinFile(read, name, 1);
-    WriteRLEFile(read, name, 1);
+    WriteBinFile(read, name, 0);
+    WriteRLEFile(read, name, 0);
 
 
     binread = ReadBinFile(name);
