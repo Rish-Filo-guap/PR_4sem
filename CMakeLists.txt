@@ -12,4 +12,6 @@ add_executable(PR_4sem main.cpp
         RWbin/RWbin.h
         RWrle/RWrle.h
         RWrle/RWrle.cpp
+        RWhaf/RWhaf.h
+        RWhaf/RWhaf.cpp
 )

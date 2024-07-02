@@ -79,6 +79,12 @@ build CMakeFiles/PR_4sem.dir/RWrle/RWrle.cpp.obj: CXX_COMPILER__PR_4sem_unscanne
   OBJECT_DIR = CMakeFiles\PR_4sem.dir
   OBJECT_FILE_DIR = CMakeFiles\PR_4sem.dir\RWrle
 
+build CMakeFiles/PR_4sem.dir/RWhaf/RWhaf.cpp.obj: CXX_COMPILER__PR_4sem_unscanned_Debug C$:/Users/Anton/CLionProjects/PR_4sem/RWhaf/RWhaf.cpp || cmake_object_order_depends_target_PR_4sem
+  DEP_FILE = CMakeFiles\PR_4sem.dir\RWhaf\RWhaf.cpp.obj.d
+  FLAGS = -g -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\PR_4sem.dir
+  OBJECT_FILE_DIR = CMakeFiles\PR_4sem.dir\RWhaf
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target PR_4sem
@@ -87,7 +93,7 @@ build CMakeFiles/PR_4sem.dir/RWrle/RWrle.cpp.obj: CXX_COMPILER__PR_4sem_unscanne
 #############################################
 # Link the executable PR_4sem.exe
 
-build PR_4sem.exe: CXX_EXECUTABLE_LINKER__PR_4sem_Debug CMakeFiles/PR_4sem.dir/main.cpp.obj CMakeFiles/PR_4sem.dir/forAll/forAll.cpp.obj CMakeFiles/PR_4sem.dir/RWbmp/RWbmp.cpp.obj CMakeFiles/PR_4sem.dir/RWbin/RWbin.cpp.obj CMakeFiles/PR_4sem.dir/RWrle/RWrle.cpp.obj
+build PR_4sem.exe: CXX_EXECUTABLE_LINKER__PR_4sem_Debug CMakeFiles/PR_4sem.dir/main.cpp.obj CMakeFiles/PR_4sem.dir/forAll/forAll.cpp.obj CMakeFiles/PR_4sem.dir/RWbmp/RWbmp.cpp.obj CMakeFiles/PR_4sem.dir/RWbin/RWbin.cpp.obj CMakeFiles/PR_4sem.dir/RWrle/RWrle.cpp.obj CMakeFiles/PR_4sem.dir/RWhaf/RWhaf.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\PR_4sem.dir
