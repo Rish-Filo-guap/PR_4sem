@@ -30,29 +30,36 @@ void BubbleSort(vector<Node> &arr);
 class Node{
 public:
     int sum;
-    char color=-1;
-    Node* r;
-    Node* l;
+    unsigned char color;
+    bool havecolor = false;
+    Node* r=NULL;
+    Node* l=NULL;
 
     Node(){};
 
-    void SetNodeL(Node left){
-        *l = left;
-    }
-    void SetNodeR(Node right){
-        *r = right;
-    }
-    void SetNodeL(Pcolor left){
-        l->sum = left.probability;
-        l->color = left.color;
-    }
-    void SetNodeR(Pcolor right){
-        r->sum = right.probability;
-        r->color = right.color;
-    }
-    void CalcSum(){
-
+    void SetNodes(Node left, Node right){
+       // cout<<"!";
+        r = &right;
+        //cout<<"!";
+        l = &left;
+       // cout<<"!";
         sum = r->sum+l->sum;
+    }
+    void GetCodes(string code){
+        if(havecolor) {
+        cout<<code<<"!!\t"<<(int)color<<endl;
+        return;
+        }
+
+        else{
+            if (l!=NULL)
+            l->GetCodes(code+"0");
+
+            if (r!=NULL)
+            r->GetCodes(code+"1");
+
+        }
+
     }
 
 

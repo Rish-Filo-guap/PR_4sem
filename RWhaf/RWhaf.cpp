@@ -69,18 +69,20 @@ void WriteHafFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biH
                 }
             }
             for(int i=0; i<256;i++){
-                cout<<i<<")\t"<<a[i]<<endl;
+               // cout<<i<<")\t"<<a[i]<<endl;
             }
             vector<Node> p;
 
-            for(int i=0; i<256;i++){
+            for(int i=0; i<=255;i++){
                 if (a[i]!=0){
                     Node n;
                     n.color =i;
+               //     cout<<"n"<<n.color<<endl;
                     n.sum = a[i];
+                    n.havecolor=true;
                     p.push_back(n);
                 //Pcolor b = Pcolor(i, a[i]);
-               // cout<<(int)b.color<<endl;
+                //cout<<(int)b.color<<endl;
 
                 }
             }
@@ -88,9 +90,31 @@ void WriteHafFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biH
             BubbleSort(p);
             for (int i=0; i<p.size();i++){
                // cout<<(int)p[i].color<<endl;
-               cout<<"!"<<endl;
+               //cout<<<<endl;
                 cout<<(int)p[i].color<<")\t"<<p[i].sum<<endl;
             }
+
+            cout<<endl;
+            while (p.size()>1){
+                Node n;
+                n.SetNodes(p[0],p[1]);
+                p.erase(p.cbegin());
+                p.erase(p.cbegin());
+                p.push_back(n);
+                cout<<(int)n.r->color<<"\t "<<(int)n.l->color<<endl;
+                cout<<(int)n.r->havecolor<<"\t "<<(int)n.l->havecolor<<endl;
+                BubbleSort(p);
+//                for (int i=0; i<p.size();i++){
+//                    cout<<")\t"<<p[i].sum<<endl;
+//                }
+//                cout<<"@"<<endl;
+            }
+            cout<<endl;
+            cout<<(int)p[0].l->color<<"\t"<<p[0].l->havecolor<<endl;
+
+            cout<<(int)p[0].r->l->color<<"\t"<<p[0].r->l->havecolor<<endl;
+            cout<<(int)p[0].r->r->color<<"\t"<<p[0].r->r->havecolor<<endl;
+            //p[0].GetCodes("");
             break;
         }
     }
