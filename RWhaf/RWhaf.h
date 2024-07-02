@@ -24,7 +24,41 @@ struct Pcolor{
 
     }
 };
-void BubbleSort(vector<Pcolor> &arr);
+class Node;
+void BubbleSort(vector<Node> &arr);
+
+class Node{
+public:
+    int sum;
+    char color=-1;
+    Node* r;
+    Node* l;
+
+    Node(){};
+
+    void SetNodeL(Node left){
+        *l = left;
+    }
+    void SetNodeR(Node right){
+        *r = right;
+    }
+    void SetNodeL(Pcolor left){
+        l->sum = left.probability;
+        l->color = left.color;
+    }
+    void SetNodeR(Pcolor right){
+        r->sum = right.probability;
+        r->color = right.color;
+    }
+    void CalcSum(){
+
+        sum = r->sum+l->sum;
+    }
+
+
+};
+
+
 
 
 

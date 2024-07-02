@@ -71,11 +71,14 @@ void WriteHafFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biH
             for(int i=0; i<256;i++){
                 cout<<i<<")\t"<<a[i]<<endl;
             }
-            vector<Pcolor> p;
+            vector<Node> p;
 
             for(int i=0; i<256;i++){
                 if (a[i]!=0){
-                p.push_back(Pcolor(i, a[i]));
+                    Node n;
+                    n.color =i;
+                    n.sum = a[i];
+                    p.push_back(n);
                 //Pcolor b = Pcolor(i, a[i]);
                // cout<<(int)b.color<<endl;
 
@@ -85,7 +88,8 @@ void WriteHafFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biH
             BubbleSort(p);
             for (int i=0; i<p.size();i++){
                // cout<<(int)p[i].color<<endl;
-                cout<<(int)p[i].color<<")\t"<<p[i].probability<<endl;
+               cout<<"!"<<endl;
+                cout<<(int)p[i].color<<")\t"<<p[i].sum<<endl;
             }
             break;
         }
@@ -98,12 +102,12 @@ void ReadHafFilePixels(ReadBMP &readB,string pixelsName, int mode) {
 
 }
 
-void BubbleSort(vector<Pcolor> &arr)
+void BubbleSort(vector<Node> &arr)
 {
     int i, j;
     for (i = 0; i < arr.size() - 1; i++)
 
         for (j = 0; j < arr.size() - i - 1; j++)
-            if (arr[j].probability > arr[j + 1].probability)
+            if (arr[j].sum > arr[j + 1].sum)
                 swap(arr[j], arr[j + 1]);
 }
