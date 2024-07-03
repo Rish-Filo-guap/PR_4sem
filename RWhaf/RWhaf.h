@@ -17,8 +17,8 @@ void ReadHafFilePixels(ReadBMP &readB,string pixelsName, int mode);
 
 struct CodeColor{
     unsigned char color;
-    int code;
-    CodeColor(char color, int code){
+    string code;
+    CodeColor(char color, string code){
         this->color = color;
         this->code= code;
 
@@ -27,7 +27,9 @@ struct CodeColor{
 class Node;
 void BubbleSortNodes(vector<Node> &arr);
 void BubbleSortCodeColors(vector<CodeColor> &arr);
-int SearchColor(unsigned char color, vector<CodeColor> v);
+string SearchColor(unsigned char color, vector<CodeColor> v);
+string charToBits(char c);
+string ClearZero(string a);
 
 class Node{
 public:
@@ -49,10 +51,10 @@ public:
        // cout<<"!";
         sum = r->sum+l->sum;
     }
-    void GetCodes(string code){
+    string GetCodes(string code){
         if(havecolor) {
-        cout<<code<<"\t"<<(int)color<<endl;
-        return;
+        //cout<<code<<"\t"<<(int)color<<endl;
+        return code;
         }
 
         else{
@@ -81,7 +83,7 @@ public:
         }
 
     }
-    void GetCodeVector(int code, vector<CodeColor> &v){
+    void GetCodeVector(string code, vector<CodeColor> &v){
         if(havecolor) {
             CodeColor a = CodeColor(color,code);
             v.push_back(a);
@@ -92,10 +94,10 @@ public:
 
         else{
             if (l!=NULL)
-                l->GetCodeVector(code<<1, v);
+                l->GetCodeVector(code+"0", v);
 
             if (r!=NULL)
-                r->GetCodeVector((code<<1) + 1, v);
+                r->GetCodeVector((code+"1"), v);
 
         }
 

@@ -17,9 +17,10 @@ int main()
 {
     ReadBMP binread;
     ReadBMP rleread;
+    ReadBMP hafread;
     ReadBMP read;
     auto start = chrono::system_clock::now();
-    for (int i = 18; i <= 18; i++) {
+    for (int i = 3; i <= 18; i++) {
 
     stringstream ss;
     ss << i;
@@ -35,6 +36,8 @@ int main()
    // WriteRLEFile(read, name, 0);
 
     WriteHafFile(read, name, 1);
+    hafread = ReadHafFile(name);
+    WriteBMPfile(hafread,"haf_" +filename);
 
     binread = ReadBinFile(name);
     WriteBMPfile(binread,"bin_" +filename);

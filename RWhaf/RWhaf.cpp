@@ -6,6 +6,7 @@
 #include <thread>
 #include <string>
 #include <vector>
+#include <bitset>
 
 #include "RWhaf.h"
 
@@ -45,7 +46,7 @@ void WriteHafFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biH
 
     FILE *oFile;
     oFile = fopen( filename.c_str(), "wb");
-    int count =0;
+    //int count =0;
 
     switch(mode) {
         case 0: {
@@ -68,9 +69,9 @@ void WriteHafFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biH
                     a[(int)pixels[i][j].grayPixel]++;
                 }
             }
-            for(int i=0; i<256;i++){
+            //for(int i=0; i<256;i++){
                // cout<<i<<")\t"<<a[i]<<endl;
-            }
+            //}
             vector<Node> p;
 
             for(int i=0; i<=255;i++){
@@ -86,28 +87,21 @@ void WriteHafFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biH
 
                 }
             }
-            cout<<endl;
+            //cout<<endl;
             BubbleSortNodes(p);
-            for (int i=0; i<p.size();i++){
+            //for (int i=0; i<p.size();i++){
                // cout<<(int)p[i].color<<endl;
                //cout<<<<endl;
-                cout<<(int)p[i].color<<")\t"<<p[i].sum<<endl;
-            }
+                //cout<<(int)p[i].color<<")\t"<<p[i].sum<<endl;
+            //}
 
-            cout<<endl;
+            //cout<<endl;
 
-            Node *w = new Node();
-            Node *wr = new Node();
-            wr->color=3;
-            wr->sum=2;
-            Node *wl = new Node();
-            wl->sum=6;
-            wl->color=4;
-            w->SetNodes(*wl, *wr);
-            cout<<(int)w->r->color;
-            cout<<endl;
-            cout<<(int)w->l->color;
-            cout<<endl;
+
+           // cout<<(int)w->r->color;
+           // cout<<endl;
+            //cout<<(int)w->l->color;
+            //cout<<endl;
 
 
 
@@ -139,24 +133,80 @@ void WriteHafFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biH
 
             //cout<<"4"<<(int)p[0].l->l->color<<"\t"<<p[0].l->l->havecolor<<endl;
             //cout<<(int)p[0].l->r->color<<"\t"<<p[0].r->r->havecolor<<endl;
-            p[0].GetCodes("");
-            cout<<endl;
-            p[0].GetCodeint(0);
+            //p[0].GetCodes("");
+            //cout<<endl;
+            //p[0].GetCodeint(0);
             vector<CodeColor> v;
-            p[0].GetCodeVector(0, v);
-            cout<<endl;
-            for(int i = 0; i<v.size();i++){
-                cout<<v[i].code<<"\t"<<(int)v[i].color<<endl;
+            p[0].GetCodeVector("", v);
+            //cout<<endl;
+            //for(int i = 0; i<v.size();i++){
+              //  cout<<v[i].code<<"\t"<<(int)v[i].color<<endl;
 
-            }
+           // }
             BubbleSortCodeColors(v);
-            cout<<endl;
-            for(int i = 0; i<v.size();i++){
-                cout<<v[i].code<<"\t"<<(int)v[i].color<<endl;
+            //cout<<endl;
+            //for(int i = 0; i<v.size();i++){
+               // cout<<v[i].code<<"\t"<<(int)v[i].color<<endl;
 
+            //}
+            //cout<<SearchColor(v[1].color,v);
+            //cout<<endl<<"-------------"<<endl;
+
+            string strPixels = "";
+
+
+            for (unsigned int i = 0; i < biHeight; i++) {
+                for (unsigned int j = 0; j < biWidth; j++) {
+                    string temp = "";
+                    temp = SearchColor(pixels[i][j].grayPixel, v);
+                    strPixels+=temp;
+                    //a[(int)pixels[i][j].grayPixel]++;
+                }
             }
-            cout<<endl;
-            cout<<SearchColor(v[1].color,v);
+            //пишем кол-во кодов в таблице
+            unsigned char codeCount = v.size();
+            //cout<<"!!"<<(int)codeCount<<endl;
+            putc(codeCount, oFile);
+
+            //пишем таблицу
+            for (int i=0; i<v.size();i++){
+                unsigned char chCode=0;
+                for (int j =0; j<v[i].code.size();j++){
+                    chCode = chCode<<1;
+                    if (v[i].code[j]=='1') chCode+=1;
+
+                }
+                //cout<<(int)chCode<<" "<<v.size()<<endl;
+
+                putc(chCode, oFile);
+                putc(v[i].color, oFile);
+            }
+
+            //cout<<strPixels;
+            //заполняем до делимости по 8 символов
+            unsigned char mod = strPixels.size()%8;
+            for (int i=0; i<mod;i++){
+                strPixels+="0";
+            }
+            //cout<<"@@"<<mode<<endl;
+            //пишем кол-во добавленных в конце символов
+            putc(mod, oFile);
+
+
+            //cout<<endl;
+            //пишем коды пикселей
+            unsigned char ch=0;
+            for (int i =0; i<strPixels.size();i++){
+                ch = ch<<1;
+                if (strPixels[i]=='1') ch+=1;
+                //cout<<"#"<<i%8<<" "<<i<<endl;
+
+                if(i>0 && i%8==7){
+                    putc(ch, oFile);
+                    ch=0;
+                }
+            }
+                //cout<<endl<<(int)ch<<" ";
             break;
         }
     }
@@ -165,8 +215,94 @@ void WriteHafFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biH
 
 }
 void ReadHafFilePixels(ReadBMP &readB,string pixelsName, int mode) {
+    ifstream fileStream(pixelsName, ifstream::binary);
+
+    RGBQUAD **rgbInfo = new RGBQUAD *[readB.infoheader.biHeight];
+    for (unsigned int i = 0; i < readB.infoheader.biHeight; i++) {
+        rgbInfo[i] = new RGBQUAD[readB.infoheader.biWidth];
+    }
+    switch (mode) {
+
+        case 0: {
+            break;
+        }
+        case 1: {
+            unsigned char count;
+            read(fileStream, count, 1);
+            vector<CodeColor> v;
+            //cout<<charToBits(char(170));
+            for(int i=0; i<count;i++){
+                unsigned char color;
+                unsigned char code;
+                read(fileStream, code, 1);
+                read(fileStream, color, 1);
+                v.push_back(CodeColor(color,  ClearZero(charToBits(code))));
+            }
+            unsigned char mod;
+            read(fileStream, mod, 1);
+            char buffer;
+            string strPixels;
+            while(fileStream.read(&buffer,1)){
+                strPixels+= charToBits(buffer);
+            }
+            //cout<<strPixels.size();
+           // cout<<strPixels;
+            for(int i=0; i<mod;i++){
+                strPixels.pop_back();
+            }
+            int k=0;
+            string search="";
+            int h=0;
+            int w=0;
+            while(k<strPixels.size()){
+                search+=strPixels[k];
+
+                for(int i=0;i<v.size();i++){
+                    if(v[i].code==search){
+
+                        search="";
+                        rgbInfo[h][w].grayPixel=v[i].color;
+                        w++;
+                        if(w>=readB.infoheader.biWidth) {
+                            h++;
+                            w=0;
+                        }
+                    }
+                }
+                k++;
+
+
+            }
+
+            break;
+        }
+    }
+    readB.pixels = rgbInfo;
+}
+string charToBits(char c) {
+    // Преобразуем char в int (так как std::bitset работает с целыми числами)
+    int i = static_cast<int>(c);
+    // Создаем объект std::bitset с размером 8 бит (1 байт)
+    std::bitset<8> bits(i);
+    // Преобразуем биты в строку
+
+    return bits.to_string();
+}
+string ClearZero(string a){
+    string b="";
+    bool flag = false;
+    for (int i=0; i<a.size();i++){
+        if(a[i]=='1') flag = true;
+        if (flag) b+=a[i];
+    }
+    if (b=="") return "0";
+    return b;
 
 }
+
+
+
+
 
 void BubbleSortNodes(vector<Node> &arr)
 {
@@ -187,7 +323,7 @@ void BubbleSortCodeColors(vector<CodeColor> &arr)
                 swap(arr[j], arr[j + 1]);
 }
 
-int SearchColor(unsigned char key, vector<CodeColor> v){
+string SearchColor(unsigned char key, vector<CodeColor> v){
 
     int left = 0;
     int right = v.size()-1;
@@ -204,8 +340,8 @@ int SearchColor(unsigned char key, vector<CodeColor> v){
                 right = mid - 1; // Искать в левой половине
             }
         }
-        cout<<endl;
-        return -1; // Цель не найдена
+       // cout<<endl;
+        return ""; // Цель не найдена
 
 
 }
