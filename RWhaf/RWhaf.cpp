@@ -87,7 +87,7 @@ void WriteHafFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biH
                 }
             }
             cout<<endl;
-            BubbleSort(p);
+            BubbleSortNodes(p);
             for (int i=0; i<p.size();i++){
                // cout<<(int)p[i].color<<endl;
                //cout<<<<endl;
@@ -95,26 +95,68 @@ void WriteHafFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biH
             }
 
             cout<<endl;
+
+            Node *w = new Node();
+            Node *wr = new Node();
+            wr->color=3;
+            wr->sum=2;
+            Node *wl = new Node();
+            wl->sum=6;
+            wl->color=4;
+            w->SetNodes(*wl, *wr);
+            cout<<(int)w->r->color;
+            cout<<endl;
+            cout<<(int)w->l->color;
+            cout<<endl;
+
+
+
+
             while (p.size()>1){
-                Node n;
-                n.SetNodes(p[0],p[1]);
+                Node *n = new  Node();
+                //cout<<"#"<<p.size()<<endl;
+                n->SetNodes(p[0],p[1]);
                 p.erase(p.cbegin());
                 p.erase(p.cbegin());
-                p.push_back(n);
-                cout<<(int)n.r->color<<"\t "<<(int)n.l->color<<endl;
-                cout<<(int)n.r->havecolor<<"\t "<<(int)n.l->havecolor<<endl;
-                BubbleSort(p);
+                p.push_back(*n);
+               // cout<<(int)n->r->color<<"\t "<<(int)n->l->color<<endl;
+               // cout<<(int)n->r->havecolor<<"\t "<<(int)n->l->havecolor<<endl;
+                BubbleSortNodes(p);
 //                for (int i=0; i<p.size();i++){
 //                    cout<<")\t"<<p[i].sum<<endl;
 //                }
 //                cout<<"@"<<endl;
             }
-            cout<<endl;
-            cout<<(int)p[0].l->color<<"\t"<<p[0].l->havecolor<<endl;
+//            cout<<"#"<<p.size()<<endl;
+//            cout<<endl;
+//            cout<<"1 "<<(int)p[0].l->color<<"\t"<<p[0].l->havecolor<<endl;
+//
+//            cout<<"2 "<<(int)p[0].r->l->color<<"\t"<<p[0].r->l->havecolor<<endl;
+//            cout<<"3 "<<(int)p[0].r->r->color<<"\t"<<p[0].r->r->havecolor<<endl;
+//
+//            cout<<"4 "<<(int)p[0].r->r->r->color<<"\t"<<p[0].r->r->r->havecolor<<endl;
+//            cout<<"4 "<<(int)p[0].r->r->l->color<<"\t"<<p[0].r->r->l->havecolor<<endl;
 
-            cout<<(int)p[0].r->l->color<<"\t"<<p[0].r->l->havecolor<<endl;
-            cout<<(int)p[0].r->r->color<<"\t"<<p[0].r->r->havecolor<<endl;
-            //p[0].GetCodes("");
+            //cout<<"4"<<(int)p[0].l->l->color<<"\t"<<p[0].l->l->havecolor<<endl;
+            //cout<<(int)p[0].l->r->color<<"\t"<<p[0].r->r->havecolor<<endl;
+            p[0].GetCodes("");
+            cout<<endl;
+            p[0].GetCodeint(0);
+            vector<CodeColor> v;
+            p[0].GetCodeVector(0, v);
+            cout<<endl;
+            for(int i = 0; i<v.size();i++){
+                cout<<v[i].code<<"\t"<<(int)v[i].color<<endl;
+
+            }
+            BubbleSortCodeColors(v);
+            cout<<endl;
+            for(int i = 0; i<v.size();i++){
+                cout<<v[i].code<<"\t"<<(int)v[i].color<<endl;
+
+            }
+            cout<<endl;
+            cout<<SearchColor(v[1].color,v);
             break;
         }
     }
@@ -126,7 +168,7 @@ void ReadHafFilePixels(ReadBMP &readB,string pixelsName, int mode) {
 
 }
 
-void BubbleSort(vector<Node> &arr)
+void BubbleSortNodes(vector<Node> &arr)
 {
     int i, j;
     for (i = 0; i < arr.size() - 1; i++)
@@ -134,4 +176,36 @@ void BubbleSort(vector<Node> &arr)
         for (j = 0; j < arr.size() - i - 1; j++)
             if (arr[j].sum > arr[j + 1].sum)
                 swap(arr[j], arr[j + 1]);
+}
+void BubbleSortCodeColors(vector<CodeColor> &arr)
+{
+    int i, j;
+    for (i = 0; i < arr.size() - 1; i++)
+
+        for (j = 0; j < arr.size() - i - 1; j++)
+            if (arr[j].color > arr[j + 1].color)
+                swap(arr[j], arr[j + 1]);
+}
+
+int SearchColor(unsigned char key, vector<CodeColor> v){
+
+    int left = 0;
+    int right = v.size()-1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2; // Предотвращение переполнения
+
+            if (v[mid].color == key) {
+                return v[mid].code; // Цель найдена
+            } else if (v[mid].color < key) {
+
+                left = mid + 1; // Искать в правой половине
+            } else {
+
+                right = mid - 1; // Искать в левой половине
+            }
+        }
+        cout<<endl;
+        return -1; // Цель не найдена
+
+
 }

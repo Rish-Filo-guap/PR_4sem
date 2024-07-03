@@ -15,17 +15,19 @@ void WriteHafFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biH
 ReadBMP ReadHafFile(std::string filename);
 void ReadHafFilePixels(ReadBMP &readB,string pixelsName, int mode);
 
-struct Pcolor{
+struct CodeColor{
     unsigned char color;
-    int probability;
-    Pcolor(char color, int probability){
+    int code;
+    CodeColor(char color, int code){
         this->color = color;
-        this->probability= probability;
+        this->code= code;
 
     }
 };
 class Node;
-void BubbleSort(vector<Node> &arr);
+void BubbleSortNodes(vector<Node> &arr);
+void BubbleSortCodeColors(vector<CodeColor> &arr);
+int SearchColor(unsigned char color, vector<CodeColor> v);
 
 class Node{
 public:
@@ -39,15 +41,17 @@ public:
 
     void SetNodes(Node left, Node right){
        // cout<<"!";
-        r = &right;
+       r = new Node;
+        *r = right;
         //cout<<"!";
-        l = &left;
+        l = new Node;
+        *l = left;
        // cout<<"!";
         sum = r->sum+l->sum;
     }
     void GetCodes(string code){
         if(havecolor) {
-        cout<<code<<"!!\t"<<(int)color<<endl;
+        cout<<code<<"\t"<<(int)color<<endl;
         return;
         }
 
@@ -61,7 +65,41 @@ public:
         }
 
     }
+    void GetCodeint(int code){
+        if(havecolor) {
+            cout<<code<<"\t"<<(int)color<<endl;
+            return;
+        }
 
+        else{
+            if (l!=NULL)
+                l->GetCodeint(code<<1);
+
+            if (r!=NULL)
+                r->GetCodeint((code<<1) + 1);
+
+        }
+
+    }
+    void GetCodeVector(int code, vector<CodeColor> &v){
+        if(havecolor) {
+            CodeColor a = CodeColor(color,code);
+            v.push_back(a);
+
+            //cout<<code<<"!!\t"<<(int)color<<endl;
+            return;
+        }
+
+        else{
+            if (l!=NULL)
+                l->GetCodeVector(code<<1, v);
+
+            if (r!=NULL)
+                r->GetCodeVector((code<<1) + 1, v);
+
+        }
+
+    }
 
 };
 
