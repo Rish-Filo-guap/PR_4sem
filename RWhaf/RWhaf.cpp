@@ -56,8 +56,7 @@ void WriteHafFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biH
         }
         case 1: {
 
-           // unsigned char pre;
-            //pre = pixels[0][0].grayPixel;
+
             int *a =  new int[256];
             for(int i=0; i<256;i++){
                 a[i]=0;
@@ -170,7 +169,8 @@ void WriteHafFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biH
 
             //пишем таблицу
             for (int i=0; i<v.size();i++){
-                unsigned char chCode=0;
+                unsigned int chCode=0;
+                //cout<<v[i].code<<endl;
                 for (int j =0; j<v[i].code.size();j++){
                     chCode = chCode<<1;
                     if (v[i].code[j]=='1') chCode+=1;
@@ -179,7 +179,12 @@ void WriteHafFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biH
                 //cout<<(int)chCode<<" "<<v.size()<<endl;
 
                 putc(chCode, oFile);
+                putc(chCode >> 8, oFile);
+                putc(chCode >> 16, oFile);
+                putc(chCode >> 24, oFile);
+
                 putc(v[i].color, oFile);
+
             }
 
             //cout<<strPixels;
@@ -233,10 +238,10 @@ void ReadHafFilePixels(ReadBMP &readB,string pixelsName, int mode) {
             //cout<<charToBits(char(170));
             for(int i=0; i<count;i++){
                 unsigned char color;
-                unsigned char code;
-                read(fileStream, code, 1);
+                unsigned int code;
+                read(fileStream, code, 4);
                 read(fileStream, color, 1);
-                v.push_back(CodeColor(color,  ClearZero(charToBits(code))));
+                v.push_back(CodeColor(color,  ClearZero(intToBits(code))));
             }
             unsigned char mod;
             read(fileStream, mod, 1);
@@ -254,20 +259,23 @@ void ReadHafFilePixels(ReadBMP &readB,string pixelsName, int mode) {
             string search="";
             int h=0;
             int w=0;
-            while(k<strPixels.size()){
+            while(k<strPixels.size() && h<=readB.infoheader.biHeight){
                 search+=strPixels[k];
-
-                for(int i=0;i<v.size();i++){
+                int i=0;
+                while(i<v.size() && h<readB.infoheader.biHeight && search!=""){
+                   // cout<<h<<" ";
                     if(v[i].code==search){
 
                         search="";
                         rgbInfo[h][w].grayPixel=v[i].color;
                         w++;
-                        if(w>=readB.infoheader.biWidth) {
+                        if(w==readB.infoheader.biWidth) {
                             h++;
                             w=0;
                         }
+
                     }
+                    i++;
                 }
                 k++;
 
@@ -284,6 +292,15 @@ string charToBits(char c) {
     int i = static_cast<int>(c);
     // Создаем объект std::bitset с размером 8 бит (1 байт)
     std::bitset<8> bits(i);
+    // Преобразуем биты в строку
+
+    return bits.to_string();
+}
+string intToBits(unsigned int c) {
+    // Преобразуем char в int (так как std::bitset работает с целыми числами)
+
+    // Создаем объект std::bitset с размером 8 бит (1 байт)
+    std::bitset<24> bits(c);
     // Преобразуем биты в строку
 
     return bits.to_string();

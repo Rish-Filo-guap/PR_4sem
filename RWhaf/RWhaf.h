@@ -29,6 +29,7 @@ void BubbleSortNodes(vector<Node> &arr);
 void BubbleSortCodeColors(vector<CodeColor> &arr);
 string SearchColor(unsigned char color, vector<CodeColor> v);
 string charToBits(char c);
+string intToBits(unsigned int c);
 string ClearZero(string a);
 
 class Node{

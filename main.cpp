@@ -20,7 +20,7 @@ int main()
     ReadBMP hafread;
     ReadBMP read;
     auto start = chrono::system_clock::now();
-    for (int i = 3; i <= 18; i++) {
+    for (int i = 17; i <= 19; i++) {
 
     stringstream ss;
     ss << i;
