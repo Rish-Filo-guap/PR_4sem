@@ -46,7 +46,6 @@ void WriteHafFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biH
 
     FILE *oFile;
     oFile = fopen( filename.c_str(), "wb");
-    //int count =0;
 
     switch(mode) {
         case 0: {
@@ -55,133 +54,81 @@ void WriteHafFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biH
 
         }
         case 1: {
-
-
             int *a =  new int[256];
+
             for(int i=0; i<256;i++){
                 a[i]=0;
             }
 
             for (unsigned int i = 0; i < biHeight; i++) {
                 for (unsigned int j = 0; j < biWidth; j++) {
-                    //cout<<(int)pixels[0][0].grayPixel<<endl;
+
                     a[(int)pixels[i][j].grayPixel]++;
                 }
             }
-            //for(int i=0; i<256;i++){
-               // cout<<i<<")\t"<<a[i]<<endl;
-            //}
+
             vector<Node> p;
 
             for(int i=0; i<=255;i++){
                 if (a[i]!=0){
                     Node n;
                     n.color =i;
-               //     cout<<"n"<<n.color<<endl;
                     n.sum = a[i];
                     n.havecolor=true;
                     p.push_back(n);
-                //Pcolor b = Pcolor(i, a[i]);
-                //cout<<(int)b.color<<endl;
-
                 }
             }
-            //cout<<endl;
+
             BubbleSortNodes(p);
-            //for (int i=0; i<p.size();i++){
-               // cout<<(int)p[i].color<<endl;
-               //cout<<<<endl;
-                //cout<<(int)p[i].color<<")\t"<<p[i].sum<<endl;
-            //}
-
-            //cout<<endl;
-
-
-           // cout<<(int)w->r->color;
-           // cout<<endl;
-            //cout<<(int)w->l->color;
-            //cout<<endl;
-
-
-
 
             while (p.size()>1){
                 Node *n = new  Node();
-                //cout<<"#"<<p.size()<<endl;
+
                 n->SetNodes(p[0],p[1]);
                 p.erase(p.cbegin());
                 p.erase(p.cbegin());
                 p.push_back(*n);
-               // cout<<(int)n->r->color<<"\t "<<(int)n->l->color<<endl;
-               // cout<<(int)n->r->havecolor<<"\t "<<(int)n->l->havecolor<<endl;
+
                 BubbleSortNodes(p);
-//                for (int i=0; i<p.size();i++){
-//                    cout<<")\t"<<p[i].sum<<endl;
-//                }
-//                cout<<"@"<<endl;
             }
-//            cout<<"#"<<p.size()<<endl;
-//            cout<<endl;
-//            cout<<"1 "<<(int)p[0].l->color<<"\t"<<p[0].l->havecolor<<endl;
-//
-//            cout<<"2 "<<(int)p[0].r->l->color<<"\t"<<p[0].r->l->havecolor<<endl;
-//            cout<<"3 "<<(int)p[0].r->r->color<<"\t"<<p[0].r->r->havecolor<<endl;
-//
-//            cout<<"4 "<<(int)p[0].r->r->r->color<<"\t"<<p[0].r->r->r->havecolor<<endl;
-//            cout<<"4 "<<(int)p[0].r->r->l->color<<"\t"<<p[0].r->r->l->havecolor<<endl;
 
-            //cout<<"4"<<(int)p[0].l->l->color<<"\t"<<p[0].l->l->havecolor<<endl;
-            //cout<<(int)p[0].l->r->color<<"\t"<<p[0].r->r->havecolor<<endl;
-            //p[0].GetCodes("");
-            //cout<<endl;
-            //p[0].GetCodeint(0);
             vector<CodeColor> v;
+
             p[0].GetCodeVector("", v);
-            //cout<<endl;
-            //for(int i = 0; i<v.size();i++){
-              //  cout<<v[i].code<<"\t"<<(int)v[i].color<<endl;
-
-           // }
             BubbleSortCodeColors(v);
-            //cout<<endl;
-            //for(int i = 0; i<v.size();i++){
-               // cout<<v[i].code<<"\t"<<(int)v[i].color<<endl;
 
-            //}
-            //cout<<SearchColor(v[1].color,v);
-            //cout<<endl<<"-------------"<<endl;
+//            for(int i=0; i<v.size();i++){
+//                cout<<v[i].code<<"\t"<<(int)v[i].color<<endl;
+//            }
 
             string strPixels = "";
-
 
             for (unsigned int i = 0; i < biHeight; i++) {
                 for (unsigned int j = 0; j < biWidth; j++) {
                     string temp = "";
                     temp = SearchColor(pixels[i][j].grayPixel, v);
                     strPixels+=temp;
-                    //a[(int)pixels[i][j].grayPixel]++;
                 }
             }
+            //cout<<strPixels<<endl;
             //пишем кол-во кодов в таблице
             unsigned char codeCount = v.size();
-            //cout<<"!!"<<(int)codeCount<<endl;
             putc(codeCount, oFile);
-
             //пишем таблицу
             for (int i=0; i<v.size();i++){
+                char codeLenght = v[i].code.size();
                 unsigned int chCode=0;
-                //cout<<v[i].code<<endl;
                 for (int j =0; j<v[i].code.size();j++){
                     chCode = chCode<<1;
                     if (v[i].code[j]=='1') chCode+=1;
 
                 }
-                //cout<<(int)chCode<<" "<<v.size()<<endl;
 
                 putc(chCode, oFile);
                 putc(chCode >> 8, oFile);
                 putc(chCode >> 16, oFile);
                 putc(chCode >> 24, oFile);
+                putc(codeLenght, oFile);
 
                 putc(v[i].color, oFile);
 
@@ -193,25 +140,20 @@ void WriteHafFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biH
             for (int i=0; i<mod;i++){
                 strPixels+="0";
             }
-            //cout<<"@@"<<mode<<endl;
             //пишем кол-во добавленных в конце символов
             putc(mod, oFile);
 
-
-            //cout<<endl;
             //пишем коды пикселей
             unsigned char ch=0;
             for (int i =0; i<strPixels.size();i++){
                 ch = ch<<1;
                 if (strPixels[i]=='1') ch+=1;
-                //cout<<"#"<<i%8<<" "<<i<<endl;
 
                 if(i>0 && i%8==7){
                     putc(ch, oFile);
                     ch=0;
                 }
             }
-                //cout<<endl<<(int)ch<<" ";
             break;
         }
     }
@@ -238,11 +180,18 @@ void ReadHafFilePixels(ReadBMP &readB,string pixelsName, int mode) {
             //cout<<charToBits(char(170));
             for(int i=0; i<count;i++){
                 unsigned char color;
+                unsigned char codeLength;
                 unsigned int code;
                 read(fileStream, code, 4);
+                read(fileStream, codeLength, 1);
                 read(fileStream, color, 1);
-                v.push_back(CodeColor(color,  ClearZero(intToBits(code))));
+                v.push_back(CodeColor(color,  ClearZero(intToBits(code), codeLength)));
             }
+
+//            for(int i=0; i<v.size();i++){
+//                cout<<v[i].code<<"\t"<<(int)v[i].color<<endl;
+//            }
+
             unsigned char mod;
             read(fileStream, mod, 1);
             char buffer;
@@ -250,6 +199,7 @@ void ReadHafFilePixels(ReadBMP &readB,string pixelsName, int mode) {
             while(fileStream.read(&buffer,1)){
                 strPixels+= charToBits(buffer);
             }
+            //cout<<strPixels<<endl;
             //cout<<strPixels.size();
            // cout<<strPixels;
             for(int i=0; i<mod;i++){
@@ -273,7 +223,7 @@ void ReadHafFilePixels(ReadBMP &readB,string pixelsName, int mode) {
                             h++;
                             w=0;
                         }
-
+                    //cout<<w<<"\t "<<h<<endl;
                     }
                     i++;
                 }
@@ -305,15 +255,17 @@ string intToBits(unsigned int c) {
 
     return bits.to_string();
 }
-string ClearZero(string a){
+string ClearZero(string a, char length){
     string b="";
-    bool flag = false;
-    for (int i=0; i<a.size();i++){
-        if(a[i]=='1') flag = true;
-        if (flag) b+=a[i];
+
+    for (int i=a.size()-1; i>=a.size()-length;i--){
+        b+=a[i];
     }
-    if (b=="") return "0";
-    return b;
+    string c="";
+    for (int i=b.size()-1;i>=0;i--){
+        c+=b[i];
+    }
+    return c;
 
 }
 

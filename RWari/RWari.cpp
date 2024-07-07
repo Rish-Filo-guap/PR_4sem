@@ -50,19 +50,7 @@ void WriteAriFilePixels(RGBQUAD** pixels, unsigned int biWidth, unsigned int biH
     }
     vector<PColor> p;
 
-    for(int i=0; i<=255;i++){
-        if (a[i]!=0){
-            PColor n;
-            n.color =i;
-            //     cout<<"n"<<n.color<<endl;
-            n.sum = a[i];
-            n.havecolor=true;
-            p.push_back(n);
-            //Pcolor b = Pcolor(i, a[i]);
-            //cout<<(int)b.color<<endl;
 
-        }
-    }
 
 }
 
